@@ -574,3 +574,348 @@ body {
     transform: none;
   }
 }
+
+
+/* ========================================
+   WebToolbox 3.0 - Recently Used Tools
+   ======================================== */
+
+.recent-section {
+  margin-bottom: 40px;
+  padding: 24px;
+  border: 1px solid rgba(139, 117, 255, 0.2);
+  border-radius: 19px;
+  background: linear-gradient(
+    145deg,
+    rgba(22, 29, 51, 0.92),
+    rgba(14, 20, 38, 0.96)
+  );
+}
+
+/* 必須保留這個規則，避免 hidden 被 display 覆蓋 */
+.recent-section[hidden] {
+  display: none;
+}
+
+.recent-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.recent-heading h3 {
+  margin: 6px 0 3px;
+  font-size: 21px;
+  letter-spacing: -0.5px;
+}
+
+.recent-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.recent-clear {
+  flex-shrink: 0;
+  padding: 9px 14px;
+  border: 1px solid #3e4867;
+  border-radius: 10px;
+  background: transparent;
+  color: #aeb9d2;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.recent-clear:hover {
+  border-color: #a594ff;
+  color: #e5dcff;
+  background: rgba(139, 117, 255, 0.09);
+}
+
+/* 最近使用工具卡片 */
+
+.recent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.recent-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #303a55;
+  border-radius: 14px;
+  background: rgba(16, 23, 42, 0.85);
+
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.recent-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(157, 135, 255, 0.65);
+  background: rgba(33, 38, 69, 0.95);
+}
+
+.recent-card .card-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+}
+
+.recent-card .card-icon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.recent-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.recent-card-info strong {
+  font-size: 13px;
+  color: #f2f4ff;
+}
+
+.recent-card-info small {
+  color: #9ba9c3;
+  font-size: 11px;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recent-arrow {
+  color: #ab9dff;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+/* 手機版 */
+
+@media (max-width: 600px) {
+  .recent-section {
+    padding: 18px;
+    margin-bottom: 28px;
+  }
+
+  .recent-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recent-heading h3 {
+    font-size: 19px;
+  }
+
+  .recent-card {
+    padding: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recent-card,
+  .recent-clear {
+    transition: none;
+  }
+
+  .recent-card:hover {
+    transform: none;
+  }
+}
+
+
+/* ========================================
+   WebToolbox 3.0 - Global Toast System
+   ======================================== */
+
+#wt-toast-container {
+  position: fixed;
+  top: 92px;
+  right: 24px;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  width: min(380px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.wt-toast {
+  --toast-color: #a69aff;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  min-height: 60px;
+  padding: 12px 14px;
+
+  border: 1px solid #414b66;
+  border-left: 3px solid var(--toast-color);
+  border-radius: 13px;
+
+  background: rgba(20, 27, 47, 0.97);
+  color: #f3f5ff;
+
+  box-shadow:
+    0 16px 45px rgba(0, 0, 0, 0.35),
+    0 0 20px rgba(139, 117, 255, 0.05);
+
+  backdrop-filter: blur(16px);
+
+  pointer-events: auto;
+
+  animation: wt-toast-enter 0.22s ease-out both;
+}
+
+.wt-toast-success {
+  --toast-color: #66dbab;
+}
+
+.wt-toast-error {
+  --toast-color: #ff8d9c;
+}
+
+.wt-toast-info {
+  --toast-color: #80baff;
+}
+
+.wt-toast-loading {
+  --toast-color: #b6a4ff;
+}
+
+.wt-toast-icon {
+  display: grid;
+  place-items: center;
+
+  width: 31px;
+  height: 31px;
+  flex-shrink: 0;
+
+  border-radius: 9px;
+  background: color-mix(
+    in srgb,
+    var(--toast-color) 15%,
+    transparent
+  );
+
+  color: var(--toast-color);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.wt-toast-message {
+  flex: 1;
+  min-width: 0;
+
+  color: #ecf0ff;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.wt-toast-close {
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #aab4ce;
+
+  font-size: 22px;
+  line-height: 1;
+}
+
+.wt-toast-close:hover {
+  background: #ffffff12;
+  color: #ffffff;
+}
+
+.wt-toast-loading .wt-toast-icon {
+  animation: wt-toast-spin 1.2s linear infinite;
+}
+
+.wt-toast-leaving {
+  animation: wt-toast-exit 0.22s ease-in forwards;
+}
+
+@keyframes wt-toast-enter {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes wt-toast-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+}
+
+@keyframes wt-toast-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 手機版放在畫面下方 */
+
+@media (max-width: 600px) {
+  #wt-toast-container {
+    top: auto;
+    bottom: 78px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+
+  .wt-toast {
+    min-height: 54px;
+    padding: 10px 12px;
+  }
+
+  .wt-toast-message {
+    font-size: 12px;
+  }
+}
+
+/* 減少動態效果 */
+
+@media (prefers-reduced-motion: reduce) {
+  .wt-toast,
+  .wt-toast-leaving,
+  .wt-toast-loading .wt-toast-icon {
+    animation: none;
+  }
+}
