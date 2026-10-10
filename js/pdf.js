@@ -74,6 +74,17 @@ function setBusy(value) {
   render();
 }
 
+// 共用通知：通知系統未載入時不影響工具原有功能
+function wtNotice(type, text) {
+  window.WebToolboxNotify?.[type]?.(text);
+}
+function wtLoading(text) {
+  return window.WebToolboxNotify?.loading?.(text) ?? null;
+}
+function wtFinish(id) {
+  if (id !== null) window.WebToolboxNotify?.dismiss?.(id);
+}
+
 // ===== 上傳 PDF =====
 
 async function addFiles(selectedFiles) {
@@ -83,10 +94,12 @@ async function addFiles(selectedFiles) {
     getLib();
   } catch (error) {
     showStatus(error.message);
+    wtNotice("error", error.message);
     return;
   }
 
   setBusy(true);
+  const toastId = wtLoading(`正在讀取 ${selectedFiles.length} 份 PDF...`);
 
   let added = 0;
   let rejected = 0;
@@ -143,13 +156,21 @@ async function addFiles(selectedFiles) {
       }
     }
 
+    wtNotice(rejected ? "error" : "success", rejected
+      ? `已加入 ${added} 份，略過 ${rejected} 份 PDF`
+      : `已加入 ${added} 份 PDF`);
     showStatus(
       `已加入 ${added} 份 PDF` +
       (rejected ? `，略過 ${rejected} 份。` : "。") +
       (errors.length ? " " + errors.slice(0, 2).join("；") : "")
     );
 
+  } catch (error) {
+    console.error(error);
+    showStatus("PDF 讀取發生錯誤");
+    wtNotice("error", "PDF 讀取失敗");
   } finally {
+    wtFinish(toastId);
     setBusy(false);
   }
 }
@@ -296,6 +317,7 @@ function removeSelectedPages() {
   render();
 
   showStatus(`已從工作清單刪除 ${count} 頁，原始文件不受影響。`);
+  wtNotice("success", `已移除 ${count} 頁（原始文件不變）`);
 }
 
 function restorePages() {
@@ -312,6 +334,7 @@ function restorePages() {
 
   render();
   showStatus("已還原成原始文件順序。");
+  wtNotice("success", "已還原原始頁面順序");
 }
 
 // ===== 分析頁碼範圍 =====
@@ -391,16 +414,20 @@ async function runTask(label, task) {
   setBusy(true);
   progressFill.style.width = "10%";
   showStatus(label);
+  const toastId = wtLoading(label);
 
   try {
     await task();
+    wtNotice("success", "PDF 已產生並開始下載");
 
     progressFill.style.width = "100%";
   } catch (error) {
     console.error(error);
     showStatus("操作失敗：" + error.message);
+    wtNotice("error", "PDF 操作失敗：" + error.message);
     progressFill.style.width = "0%";
   } finally {
+    wtFinish(toastId);
     setBusy(false);
   }
 }
@@ -433,6 +460,7 @@ function downloadRange() {
     indices = parseRanges(pageRange.value, pages.length);
   } catch (error) {
     showStatus(error.message);
+    wtNotice("error", error.message);
     return;
   }
 

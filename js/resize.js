@@ -41,6 +41,17 @@ const extensions = {
 let images = [];
 let busy = false;
 
+// 共用通知：通知系統未載入時不影響工具原有功能
+function wtNotice(type, text) {
+  window.WebToolboxNotify?.[type]?.(text);
+}
+function wtLoading(text) {
+  return window.WebToolboxNotify?.loading?.(text) ?? null;
+}
+function wtFinish(id) {
+  if (id !== null) window.WebToolboxNotify?.dismiss?.(id);
+}
+
 // ===== 通用功能 =====
 
 function bytes(n) {
@@ -264,6 +275,9 @@ async function addFiles(files) {
   invalidateResults();
   renderList();
 
+  if (rejected) wtNotice("error", `略過 ${rejected} 張不支援、過大或無法讀取的圖片`);
+  else if (added) wtNotice("success", `已加入 ${added} 張圖片`);
+
   message(
     `已加入 ${added} 張圖片` +
     (rejected ? `，略過 ${rejected} 張不支援或過大的圖片。` : "。")
@@ -414,6 +428,7 @@ async function processImages() {
     images.forEach(getTargetDimensions);
   } catch (error) {
     message(error.message);
+    wtNotice("error", error.message);
     return;
   }
 
@@ -432,6 +447,7 @@ async function processImages() {
 
   let success = 0;
   let failed = 0;
+  const toastId = wtLoading(`正在調整 ${images.length} 張圖片...`);
 
   try {
     for (let i = 0; i < images.length; i++) {
@@ -458,7 +474,13 @@ async function processImages() {
     message(
       `處理完成：成功 ${success} 張，失敗 ${failed} 張。`
     );
+    wtNotice(failed ? "error" : "success", `圖片處理完成：成功 ${success} 張，失敗 ${failed} 張`);
+  } catch (error) {
+    console.error(error);
+    message("圖片處理發生未預期錯誤");
+    wtNotice("error", "圖片處理失敗，請重新嘗試");
   } finally {
+    wtFinish(toastId);
     busy = false;
     clearAll.disabled = false;
     fileInput.disabled = false;
@@ -491,6 +513,7 @@ async function downloadZip() {
 
   if (typeof JSZip === "undefined") {
     message("ZIP 函式庫載入失敗，請確認網路連線。");
+    wtNotice("error", "ZIP 函式庫載入失敗");
     return;
   }
 
@@ -498,6 +521,7 @@ async function downloadZip() {
   downloadAll.disabled = true;
   processBtn.disabled = true;
 
+  const toastId = wtLoading("正在建立圖片 ZIP...");
   try {
     message("正在建立 ZIP 壓縮檔...");
 
@@ -518,11 +542,14 @@ async function downloadZip() {
 
     downloadBlob(blob, "WebToolbox-Resized-Images.zip");
     message(`ZIP 已建立，包含 ${completed.length} 張圖片。`);
+    wtNotice("success", `包含 ${completed.length} 張圖片的 ZIP 已開始下載`);
 
   } catch (error) {
     console.error(error);
     message("建立 ZIP 失敗，請嘗試個別下載圖片。");
+    wtNotice("error", "ZIP 建立失敗，請嘗試個別下載");
   } finally {
+    wtFinish(toastId);
     busy = false;
     renderList();
   }

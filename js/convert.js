@@ -1,6 +1,17 @@
 
 "use strict";
 
+// 共用通知：通知系統未載入時不影響工具原有功能
+function wtNotice(type, text) {
+  window.WebToolboxNotify?.[type]?.(text);
+}
+function wtLoading(text) {
+  return window.WebToolboxNotify?.loading?.(text) ?? null;
+}
+function wtFinish(id) {
+  if (id !== null) window.WebToolboxNotify?.dismiss?.(id);
+}
+
 // ===== 取得元素 =====
 
 const $ = id => document.getElementById(id);
@@ -169,6 +180,9 @@ async function addFiles(files) {
 
   invalidateResults();
   renderList();
+
+  if (rejected) wtNotice("error", `略過 ${rejected} 張不支援或無法讀取的圖片`);
+  else if (added) wtNotice("success", `已加入 ${added} 張圖片`);
 
   showStatus(
     `已加入 ${added} 張圖片` +
@@ -385,6 +399,7 @@ async function convertImages() {
 
   let success = 0;
   let failed = 0;
+  const toastId = wtLoading(`正在轉換 ${images.length} 張圖片...`);
 
   try {
     for (let i = 0; i < images.length; i++) {
@@ -414,7 +429,13 @@ async function convertImages() {
     showStatus(
       `轉換完成：成功 ${success} 張，失敗 ${failed} 張。`
     );
+    wtNotice(failed ? "error" : "success", `轉換完成：成功 ${success} 張，失敗 ${failed} 張`);
+  } catch (error) {
+    console.error(error);
+    showStatus("轉換過程發生錯誤");
+    wtNotice("error", "圖片轉換失敗，請再試一次");
   } finally {
+    wtFinish(toastId);
     setBusy(false);
     updateQualityUI();
   }
@@ -446,10 +467,12 @@ async function downloadZip() {
 
   if (typeof JSZip === "undefined") {
     showStatus("ZIP 函式庫未載入，請檢查網路連線。");
+    wtNotice("error", "ZIP 函式庫載入失敗");
     return;
   }
 
   setBusy(true);
+  const toastId = wtLoading("正在建立圖片 ZIP...");
 
   try {
     showStatus("正在建立 ZIP 檔案...");
@@ -476,10 +499,13 @@ async function downloadZip() {
     showStatus(
       `ZIP 已建立，包含 ${completed.length} 張圖片。`
     );
+    wtNotice("success", `包含 ${completed.length} 張圖片的 ZIP 已開始下載`);
   } catch (error) {
     console.error(error);
     showStatus("ZIP 建立失敗，請改用個別下載。");
+    wtNotice("error", "ZIP 建立失敗，請改用個別下載");
   } finally {
+    wtFinish(toastId);
     setBusy(false);
     updateQualityUI();
   }
