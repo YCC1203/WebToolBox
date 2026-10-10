@@ -258,7 +258,18 @@ function toggleFavorite(id) {
 
 // ===== 提示訊息 =====
 
+
 function showToast(message) {
+  if (window.WebToolboxNotify) {
+    if (message.startsWith("無法")) {
+      WebToolboxNotify.error(message);
+    } else {
+      WebToolboxNotify.success(message);
+    }
+    return;
+  }
+
+  // 後備提示：即使通知系統未載入也能顯示
   clearTimeout(toastTimer);
 
   toast.textContent = message;
@@ -268,6 +279,7 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 2600);
 }
+
 
 // ===== 建立工具卡片 =====
 
