@@ -469,3 +469,108 @@ body {
     transform: none;
   }
 }
+
+
+/* ========================================
+   WebToolbox 3.0 - Unified Tool Icons
+   ======================================== */
+
+/* 統一工具圖示外框 */
+
+.card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 54px;
+  height: 54px;
+
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+/* SVG 線條圖示 */
+
+.card-icon svg {
+  display: block;
+  width: 27px;
+  height: 27px;
+}
+
+/* 各分類使用不同顏色 */
+
+.card-icon.purple {
+  color: #b3a1ff;
+  background: rgba(119, 88, 238, 0.15);
+  border-color: rgba(155, 132, 255, 0.16);
+}
+
+.card-icon.blue {
+  color: #74bbff;
+  background: rgba(58, 149, 245, 0.14);
+  border-color: rgba(116, 187, 255, 0.16);
+}
+
+.card-icon.green {
+  color: #61d6b2;
+  background: rgba(37, 189, 149, 0.13);
+  border-color: rgba(97, 214, 178, 0.16);
+}
+
+.card-icon.orange {
+  color: #ffc184;
+  background: rgba(236, 155, 67, 0.13);
+  border-color: rgba(255, 193, 132, 0.16);
+}
+
+/* 滑鼠移到卡片時的效果 */
+
+.tool-card:hover .card-icon {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.tool-card:hover .card-icon.purple {
+  border-color: rgba(179, 161, 255, 0.45);
+}
+
+.tool-card:hover .card-icon.blue {
+  border-color: rgba(116, 187, 255, 0.45);
+}
+
+.tool-card:hover .card-icon.green {
+  border-color: rgba(97, 214, 178, 0.45);
+}
+
+.tool-card:hover .card-icon.orange {
+  border-color: rgba(255, 193, 132, 0.45);
+}
+
+/* 手機與減少動畫設定 */
+
+@media (max-width: 600px) {
+  .card-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .card-icon svg {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-icon {
+    transition: none;
+  }
+
+  .tool-card:hover .card-icon {
+    transform: none;
+  }
+}

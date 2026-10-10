@@ -1,6 +1,100 @@
 
 "use strict";
 
+
+/* ===== WebToolbox 統一 SVG 圖示 ===== */
+
+const toolIcons = {
+  qr: `
+    <rect x="3" y="3" width="7" height="7" rx="1"/>
+    <rect x="14" y="3" width="7" height="7" rx="1"/>
+    <rect x="3" y="14" width="7" height="7" rx="1"/>
+    <path d="M6 6h1v1H6z"/>
+    <path d="M17 6h1v1h-1z"/>
+    <path d="M6 17h1v1H6z"/>
+    <path d="M14 14h3v3h-3z"/>
+    <path d="M21 14v3h-2"/>
+    <path d="M14 21h3v-2"/>
+    <path d="M20 20h1v1h-1z"/>
+  `,
+
+  password: `
+    <circle cx="7.5" cy="15.5" r="5.5"/>
+    <path d="M12 12l8-8 2 2-2 2 2 2-3 3-2-2-3 3"/>
+    <circle cx="6.5" cy="16.5" r="1"/>
+  `,
+
+  text: `
+    <path d="M4 6h16"/>
+    <path d="M4 10h12"/>
+    <path d="M4 14h16"/>
+    <path d="M4 18h9"/>
+  `,
+
+  json: `
+    <path d="M9 3H7a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2"/>
+    <path d="M3 11a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h2"/>
+    <path d="M15 3h2a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2"/>
+    <path d="M21 11a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2h-2"/>
+  `,
+
+  resize: `
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <path d="M8 16l8-8"/>
+    <path d="M10 8h6v6"/>
+    <path d="M8 12v4h4"/>
+  `,
+
+  convert: `
+    <rect x="3" y="3" width="18" height="18" rx="3"/>
+    <path d="M7 9h10l-3-3"/>
+    <path d="M17 9l-3 3"/>
+    <path d="M17 15H7l3 3"/>
+    <path d="M7 15l3-3"/>
+  `,
+
+  compress: `
+    <rect x="3" y="3" width="18" height="18" rx="3"/>
+    <path d="M8 8l3 3"/>
+    <path d="M8 11V8h3"/>
+    <path d="M16 8l-3 3"/>
+    <path d="M13 8h3v3"/>
+    <path d="M8 16l3-3"/>
+    <path d="M8 13v3h3"/>
+    <path d="M16 16l-3-3"/>
+    <path d="M13 16h3v-3"/>
+  `,
+
+  pdf: `
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <path d="M14 2v6h6"/>
+    <path d="M8 13h8"/>
+    <path d="M8 17h5"/>
+  `
+};
+
+// 產生 SVG 元素
+function createToolIcon(id) {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  const svg = document.createElementNS(SVG_NS, "svg");
+
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.8");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+
+  // 圖示內容來自程式內固定定義，不使用外部輸入
+  svg.innerHTML = toolIcons[id] || toolIcons.text;
+
+  return svg;
+}
+
+
 // ===== 工具資料 =====
 
 const tools = [
@@ -195,7 +289,7 @@ function createToolCard(tool) {
 
   const icon = document.createElement("span");
   icon.className = `card-icon ${tool.color}`;
-  icon.textContent = tool.icon;
+  icon.appendChild(createToolIcon(tool.id));
 
   const arrow = document.createElement("span");
   arrow.className = "card-arrow";
