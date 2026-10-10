@@ -379,27 +379,39 @@ function parseRanges(text, total) {
 
 // ===== 建立新 PDF =====
 
-async function buildPDF(selectedPages) {
+async function buildPDF(selectedPages, onProgress = null) {
   const { PDFDocument } = getLib();
   const output = await PDFDocument.create();
+  const total = selectedPages.length;
+  let processed = 0;
 
-  // 逐頁複製，順序完全依照工作清單
-  for (const page of selectedPages) {
-    const source = getFile(page.fileId);
+  // 將「相鄰且來自同一 PDF」的頁面一起複製，減少逐頁呼叫
+  // copyPages() 的額外開銷，同時保留使用者指定的排列順序。
+  // 每批上限 24 頁，避免一次處理過大的集合。
+  while (processed < total) {
+    const start = selectedPages[processed];
+    const source = getFile(start.fileId);
+    if (!source) throw new Error("找不到來源 PDF");
 
-    if (!source) {
-      throw new Error("找不到來源 PDF");
+    const indices = [];
+    while (processed + indices.length < total && indices.length < 24) {
+      const page = selectedPages[processed + indices.length];
+      if (page.fileId !== start.fileId) break;
+      indices.push(page.pageIndex);
     }
 
-    const [copied] = await output.copyPages(
-      source.doc,
-      [page.pageIndex]
-    );
+    const copied = await output.copyPages(source.doc, indices);
+    for (const page of copied) output.addPage(page);
+    processed += indices.length;
 
-    output.addPage(copied);
+    if (onProgress) onProgress(processed, total);
+    // 讓進度列、按鈕的變更有機會畫到畫面上。
+    if (processed < total) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
   }
 
-  return await output.save();
+  return output.save();
 }
 
 function pdfBlob(data) {
@@ -418,12 +430,13 @@ async function runTask(label, task) {
 
   try {
     await task();
-    wtNotice("success", "PDF 已產生並開始下載");
-
     progressFill.style.width = "100%";
+    wtFinish(toastId);
+    wtNotice("success", "PDF 已產生並開始下載");
   } catch (error) {
     console.error(error);
     showStatus("操作失敗：" + error.message);
+    wtFinish(toastId);
     wtNotice("error", "PDF 操作失敗：" + error.message);
     progressFill.style.width = "0%";
   } finally {
@@ -438,7 +451,10 @@ function downloadMerged() {
   if (!pages.length) return;
 
   runTask("正在建立 PDF...", async () => {
-    const bytes = await buildPDF(pages);
+    const bytes = await buildPDF(pages, (done, total) => {
+      progressFill.style.width = `${10 + Math.round(done / total * 75)}%`;
+      showStatus(`正在合併 PDF：${done} / ${total} 頁...`);
+    });
 
     downloadBlob(
       pdfBlob(bytes),
@@ -466,7 +482,10 @@ function downloadRange() {
 
   runTask("正在擷取指定頁面...", async () => {
     const selected = indices.map(index => pages[index]);
-    const bytes = await buildPDF(selected);
+    const bytes = await buildPDF(selected, (done, total) => {
+      progressFill.style.width = `${10 + Math.round(done / total * 75)}%`;
+      showStatus(`正在擷取頁面：${done} / ${total} 頁...`);
+    });
 
     downloadBlob(
       pdfBlob(bytes),
@@ -514,9 +533,13 @@ function downloadSplit() {
       await new Promise(resolve => setTimeout(resolve, 0));
     }
 
+    showStatus("正在打包分割後的 PDF...");
     const blob = await zip.generateAsync({
       type: "blob",
       compression: "STORE"
+    }, metadata => {
+      progressFill.style.width =
+        `${90 + Math.round(metadata.percent * 0.09)}%`;
     });
 
     downloadBlob(blob, "WebToolbox-Split-Pages.zip");
