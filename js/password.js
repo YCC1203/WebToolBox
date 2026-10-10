@@ -177,17 +177,20 @@ function generatePassword() {
 async function copyPassword() {
   if (!currentPassword) {
     copyStatus.textContent = "請先產生密碼。";
+    window.WebToolboxNotify?.info("請先產生密碼");
     return;
   }
 
   try {
     await navigator.clipboard.writeText(currentPassword);
     copyStatus.textContent = "✓ 已複製到剪貼簿";
+    window.WebToolboxNotify?.success("密碼已複製到剪貼簿");
 
   } catch (error) {
     console.error("複製失敗：", error);
     copyStatus.textContent =
       "無法自動複製，請手動選取密碼。";
+    window.WebToolboxNotify?.error("密碼複製失敗，請檢查瀏覽器權限");
   }
 }
 

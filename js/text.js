@@ -28,9 +28,18 @@ const MAX_HISTORY = 30;
 
 // ===== 顯示狀態訊息 =====
 
-function showStatus(message, error = false) {
+function showStatus(message, error = false, toast = false) {
   textStatus.textContent = message;
   textStatus.style.color = error ? "#ff9a9a" : "#9ae6bf";
+
+  if (!toast || !message) return;
+
+  const cleanMessage = message.replace(/^✓\s*/, "");
+  if (error) {
+    window.WebToolboxNotify?.error(cleanMessage);
+  } else {
+    window.WebToolboxNotify?.success(cleanMessage);
+  }
 }
 
 
@@ -217,10 +226,10 @@ async function copyText() {
 
   try {
     await navigator.clipboard.writeText(text);
-    showStatus("✓ 已複製到剪貼簿");
+    showStatus("✓ 已複製到剪貼簿", false, true);
   } catch (error) {
     console.error("複製失敗：", error);
-    showStatus("無法自動複製，請手動選取文字。", true);
+    showStatus("無法自動複製，請手動選取文字。", true, true);
   }
 }
 
@@ -253,7 +262,7 @@ function downloadText() {
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-  showStatus("✓ TXT 檔案已開始下載");
+  showStatus("✓ TXT 檔案已開始下載", false, true);
 }
 
 

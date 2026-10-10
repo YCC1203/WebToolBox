@@ -170,6 +170,7 @@ function parseInput() {
     }
 
     setStatus("error", "JSON 格式錯誤", detail);
+    window.WebToolboxNotify?.error("JSON 格式錯誤，請查看下方詳細資訊");
 
     return { success: false };
   }
@@ -256,6 +257,7 @@ async function copyJSON() {
 
   try {
     await navigator.clipboard.writeText(output.value);
+    window.WebToolboxNotify?.success("JSON 已複製到剪貼簿");
 
     setStatus(
       "success",
@@ -265,6 +267,7 @@ async function copyJSON() {
 
   } catch (error) {
     console.error("複製失敗：", error);
+    window.WebToolboxNotify?.error("JSON 複製失敗");
 
     setStatus(
       "error",
@@ -294,6 +297,7 @@ function downloadJSON() {
   document.body.appendChild(link);
   link.click();
   link.remove();
+  window.WebToolboxNotify?.success("JSON 檔案已開始下載");
 
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

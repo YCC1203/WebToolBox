@@ -121,6 +121,7 @@ function downloadQR() {
   canvas.toBlob(blob => {
     if (!blob) {
       qrStatus.textContent = "圖片匯出失敗，請再試一次";
+      window.WebToolboxNotify?.error("QR Code 圖片匯出失敗");
       return;
     }
 
@@ -133,6 +134,8 @@ function downloadQR() {
     document.body.appendChild(link);
     link.click();
     link.remove();
+
+    window.WebToolboxNotify?.success("QR Code PNG 已開始下載");
 
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }, "image/png");
