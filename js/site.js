@@ -96,6 +96,37 @@
       }
     }
   });
+  // ===== 最近使用：進入工具頁面時記錄 =====
+  const RECENT_TOOLS_KEY = "webtoolbox-recent";
+  const knownToolIds = new Set([
+    "qr", "password", "text", "json",
+    "resize", "convert", "compress", "pdf"
+  ]);
+
+  function recordRecentTool() {
+    const match = window.location.pathname.match(
+      /\/tools\/([a-z]+)\.html$/i
+    );
+    if (!match) return;
+
+    const toolId = match[1].toLowerCase();
+    if (!knownToolIds.has(toolId)) return;
+
+    try {
+      const stored = JSON.parse(
+        localStorage.getItem(RECENT_TOOLS_KEY) || "[]"
+      );
+      const previous = Array.isArray(stored)
+        ? stored.filter(id => typeof id === "string" && knownToolIds.has(id))
+        : [];
+      const recent = [toolId, ...previous.filter(id => id !== toolId)].slice(0, 4);
+      localStorage.setItem(RECENT_TOOLS_KEY, JSON.stringify(recent));
+    } catch (error) {
+      console.warn("無法儲存最近使用紀錄：", error);
+    }
+  }
+
+  recordRecentTool();
 
   // ===== 更新頁尾年份 =====
   document.querySelectorAll("#year").forEach(element => {

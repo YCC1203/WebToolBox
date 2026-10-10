@@ -446,9 +446,112 @@ filters.addEventListener("click", event => {
   renderTools();
 });
 
+
+// ===== 首頁最近使用工具 =====
+
+const recentSection =
+  document.getElementById("recentSection");
+
+const recentGrid =
+  document.getElementById("recentGrid");
+
+const clearRecentButton =
+  document.getElementById("clearRecent");
+
+const RECENT_KEY = "webtoolbox-recent";
+
+function loadRecentTools() {
+  try {
+    const stored = JSON.parse(
+      localStorage.getItem(RECENT_KEY) || "[]"
+    );
+
+    if (!Array.isArray(stored)) return [];
+
+    const validIds = new Set(tools.map(tool => tool.id));
+
+    return [
+      ...new Set(
+        stored.filter(
+          id => typeof id === "string" &&
+                validIds.has(id)
+        )
+      )
+    ].slice(0, 4);
+
+  } catch {
+    return [];
+  }
+}
+
+function renderRecentTools() {
+  const recentIds = loadRecentTools();
+
+  recentGrid.replaceChildren();
+
+  if (recentIds.length === 0) {
+    recentSection.hidden = true;
+    return;
+  }
+
+  recentSection.hidden = false;
+
+  for (const id of recentIds) {
+    const tool = tools.find(item => item.id === id);
+    if (!tool) continue;
+
+    const link = document.createElement("a");
+    link.className = "recent-card";
+    link.href = tool.url;
+
+    // 圖示沿用上一輪的統一 SVG
+    const iconBox = document.createElement("span");
+    iconBox.className = `card-icon ${tool.color}`;
+
+    iconBox.appendChild(createToolIcon(tool.id));
+
+    const info = document.createElement("span");
+    info.className = "recent-card-info";
+
+    const title = document.createElement("strong");
+    title.textContent = tool.name;
+
+    const description = document.createElement("small");
+    description.textContent = tool.description;
+
+    info.append(title, description);
+
+    const arrow = document.createElement("span");
+    arrow.className = "recent-arrow";
+    arrow.textContent = "↗";
+    arrow.setAttribute("aria-hidden", "true");
+
+    link.append(iconBox, info, arrow);
+    recentGrid.appendChild(link);
+  }
+}
+
+// 清除所有最近使用紀錄
+clearRecentButton.addEventListener("click", () => {
+  try {
+    localStorage.removeItem(RECENT_KEY);
+  } catch (error) {
+    console.warn("無法清除使用紀錄：", error);
+  }
+
+  renderRecentTools();
+});
+
+// 從其他分頁返回時更新最近使用紀錄
+window.addEventListener("pageshow", () => {
+  renderRecentTools();
+});
+
+
 // ===== 初始化 =====
 
 document.getElementById("year").textContent =
   new Date().getFullYear();
 
 renderTools();
+renderRecentTools();
