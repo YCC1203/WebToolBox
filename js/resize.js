@@ -40,6 +40,7 @@ const extensions = {
 
 let images = [];
 let busy = false;
+let importing = false;
 
 // 共用通知：通知系統未載入時不影響工具原有功能
 function wtNotice(type, text) {
@@ -102,8 +103,8 @@ function updateCount() {
   sourceSize.textContent =
     `總大小：${bytes(images.reduce((n, item) => n + item.file.size, 0))}`;
 
-  processBtn.disabled = busy || images.length === 0;
-  downloadAll.disabled = busy || !images.some(x => x.result);
+  processBtn.disabled = busy || importing || images.length === 0;
+  downloadAll.disabled = busy || importing || !images.some(x => x.result);
 }
 
 function getTargetDimensions(item) {
@@ -220,8 +221,14 @@ function renderList() {
 // ===== 匯入圖片 =====
 
 async function addFiles(files) {
-  if (busy) return;
+  if (busy || importing || !files.length) return;
 
+  importing = true;
+  fileInput.disabled = true;
+  clearAll.disabled = true;
+  updateCount();
+
+  try {
   let added = 0;
   let rejected = 0;
 
@@ -282,6 +289,12 @@ async function addFiles(files) {
     `已加入 ${added} 張圖片` +
     (rejected ? `，略過 ${rejected} 張不支援或過大的圖片。` : "。")
   );
+  } finally {
+    importing = false;
+    fileInput.disabled = busy;
+    clearAll.disabled = busy;
+    updateCount();
+  }
 }
 
 // ===== 寬高比例同步 =====
@@ -369,13 +382,14 @@ async function resizeImage(item, index) {
   }
 
   let bitmap = null;
+  let canvas = null;
 
   try {
     bitmap = await createImageBitmap(item.file, {
       imageOrientation: "from-image"
     });
 
-    const canvas = document.createElement("canvas");
+    canvas = document.createElement("canvas");
     canvas.width = dimensions.width;
     canvas.height = dimensions.height;
 
@@ -415,13 +429,17 @@ async function resizeImage(item, index) {
     };
   } finally {
     if (bitmap) bitmap.close();
+    if (canvas) {
+      canvas.width = 0;
+      canvas.height = 0;
+    }
   }
 }
 
 // ===== 批次處理 =====
 
 async function processImages() {
-  if (busy || images.length === 0) return;
+  if (busy || importing || images.length === 0) return;
 
   try {
     // 先檢查所有尺寸設定
@@ -506,7 +524,7 @@ function downloadBlob(blob, filename) {
 }
 
 async function downloadZip() {
-  if (busy) return;
+  if (busy || importing) return;
 
   const completed = images.filter(item => item.result);
   if (!completed.length) return;
@@ -558,7 +576,7 @@ async function downloadZip() {
 // ===== 清空圖片 =====
 
 function removeAll() {
-  if (busy) return;
+  if (busy || importing) return;
 
   images.forEach(item => {
     URL.revokeObjectURL(item.previewUrl);
@@ -575,13 +593,13 @@ function removeAll() {
 // ===== 事件 =====
 
 dropZone.addEventListener("click", () => {
-  if (!busy) fileInput.click();
+  if (!busy && !importing) fileInput.click();
 });
 
 dropZone.addEventListener("keydown", event => {
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
-    if (!busy) fileInput.click();
+    if (!busy && !importing) fileInput.click();
   }
 });
 
@@ -597,7 +615,7 @@ dropZone.addEventListener("dragleave", () => {
 dropZone.addEventListener("drop", event => {
   event.preventDefault();
   dropZone.classList.remove("dragover");
-  addFiles([...event.dataTransfer.files]);
+  if (!importing && !busy) addFiles([...event.dataTransfer.files]);
 });
 
 fileInput.addEventListener("change", async () => {
