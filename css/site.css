@@ -919,3 +919,114 @@ body {
     animation: none;
   }
 }
+
+
+/* ===================================================
+   WebToolbox 3.0 / Round 8: narrow-screen refinements
+   Affects presentation only. Existing tool JS untouched.
+   =================================================== */
+
+/* Prevent large editor contents, filenames, and grid children
+   from forcing the page wider than the viewport. */
+.tools-section,
+.tools-grid,
+.tool-card,
+.recent-section,
+.recent-grid,
+.resize-page,
+.converter-page,
+.pdf-page,
+.json-page,
+.text-page,
+.password-page,
+.qr-page,
+.image-list,
+.image-item,
+.image-info,
+.pdf-page-item,
+.pdf-page-info,
+.json-editor,
+.text-panel {
+  min-width: 0;
+}
+
+/* Constrain long unbroken user filenames and result messages. */
+.image-info,
+.image-result,
+.pdf-page-info,
+.pdf-file-info,
+.wt-toast-message {
+  overflow-wrap: anywhere;
+}
+
+/* Input textareas must not expand the layout on long JSON lines. */
+.json-editor textarea,
+.text-panel textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Keep controls usable on touch screens without changing desktop. */
+@media (max-width: 600px) {
+  .toolbar,
+  .filters,
+  .recent-section,
+  .recent-heading,
+  .recent-card {
+    min-width: 0;
+  }
+
+  .recent-heading {
+    gap: 12px;
+  }
+
+  .recent-card-info,
+  .recent-card-info strong,
+  .recent-card-info small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .pdf-page-controls button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .pdf-page-item input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .image-download,
+  .pdf-export-card button,
+  .editor-actions button,
+  .input-actions button {
+    min-height: 40px;
+  }
+
+  .pdf-pages-list {
+    max-height: min(60vh, 480px);
+    overscroll-behavior: contain;
+  }
+
+  .json-editor textarea,
+  .text-panel textarea {
+    font-size: 16px; /* Prevent iOS Safari focus zoom */
+  }
+}
+
+@media (max-width: 380px) {
+  .pdf-page-item {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .pdf-page-info {
+    flex-basis: calc(100% - 105px);
+  }
+
+  .recent-card {
+    gap: 10px;
+  }
+}
