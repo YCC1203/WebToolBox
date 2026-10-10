@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d1a">
+  <meta name="description" content="免費線上高品質圖片壓縮工具，保持解析度，支援批次壓縮與下載。">
+  <title>高品質圖片壓縮 | WebToolbox</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/resize.css">
+  <link rel="stylesheet" href="../css/compress.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="../js/compress.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+    <nav class="nav-links" aria-label="主選單">
+      <a href="../index.html">首頁</a>
+      <a href="../index.html#tools">所有工具</a>
+    </nav>
+    <a class="nav-button" href="../index.html#tools">返回工具箱 ↗</a>
+  </header>
+
+  <main class="resize-page compress-page">
+    <a href="../index.html#tools" class="back-link">← 返回所有工具</a>
+
+    <div class="resize-heading">
+      <span class="eyebrow">IMAGE / COMPRESSOR</span>
+      <h1>高品質<span class="gradient-text">圖片壓縮</span></h1>
+      <p>保留原始解析度、優先維持圖片品質，避免輸出檔案不減反增。</p>
+    </div>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>01　上傳圖片</h2>
+          <p>支援 JPG、PNG、WebP。最多 20 張，每張不超過 20 MB。</p>
+        </div>
+        <button id="clearAll" class="ghost-btn">清空圖片</button>
+      </div>
+
+      <div id="dropZone" class="drop-zone" tabindex="0"
+           role="button" aria-label="選擇或拖曳圖片">
+        <div class="upload-icon">⇧</div>
+        <strong>拖曳圖片到這裡</strong>
+        <p>或點擊選擇圖片</p>
+        <span>JPG / PNG / WebP</span>
+      </div>
+
+      <input id="fileInput" type="file"
+             accept="image/jpeg,image/png,image/webp"
+             multiple hidden>
+
+      <div class="file-summary">
+        <span id="fileCount">尚未選擇圖片</span>
+        <span id="sourceSize">總大小：0 B</span>
+      </div>
+    </section>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>02　壓縮設定</h2>
+          <p>使用多次編碼比較，選擇符合設定的結果。</p>
+        </div>
+        <span class="section-tag">SMART COMPRESSION</span>
+      </div>
+
+      <div class="setting-grid">
+        <div class="field">
+          <label for="outputMode">輸出格式策略</label>
+          <select id="outputMode">
+            <option value="original">維持原始格式（推薦）</option>
+            <option value="webp">嘗試轉換為 WebP</option>
+          </select>
+          <small>如果無法達到節省門檻，將保留原始檔案。</small>
+        </div>
+
+        <div class="field">
+          <label for="quality">
+            最低編碼品質 <span id="qualityValue">90%</span>
+          </label>
+          <input id="quality" type="range"
+                 min="80" max="98" value="90">
+          <small>適用 JPEG、WebP；越高通常越保守，可能越難縮小。</small>
+        </div>
+
+        <div class="field">
+          <label for="minSaving">最低節省比例</label>
+          <select id="minSaving">
+            <option value="1">至少 1%</option>
+            <option value="3" selected>至少 3%（推薦）</option>
+            <option value="5">至少 5%</option>
+            <option value="10">至少 10%</option>
+          </select>
+        </div>
+
+        <div class="fixed-resolution">
+          <span>✓</span>
+          <div>
+            <strong>原始解析度</strong>
+            <small>保持寬度與高度，不縮放、不裁切</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="compression-notice">
+        <strong>關於 PNG 與透明背景</strong>
+        <p>
+          維持 PNG 時會嘗試重新進行無損像素編碼。
+          如果檔案沒有縮小，會保留原檔。
+          選擇 WebP 可能讓 PNG 縮小更多，但通常是有損轉換，
+          並不適合所有文字、圖示或精細線條。
+        </p>
+      </div>
+
+      <button id="compressBtn" class="primary-action" disabled>
+        ✦ 開始智慧壓縮
+      </button>
+    </section>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>03　壓縮結果</h2>
+          <p>查看原始與輸出檔案大小，也可比較圖片外觀。</p>
+        </div>
+        <button id="downloadAll" class="ghost-btn" disabled>
+          ↓ 下載全部 ZIP
+        </button>
+      </div>
+
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <p id="status" class="resize-status" role="status" aria-live="polite">
+        請先上傳圖片。
+      </p>
+
+      <div class="compression-summary" id="summary" hidden>
+        <div>
+          <span>原始總大小</span>
+          <strong id="totalBefore">—</strong>
+        </div>
+        <div>
+          <span>輸出總大小</span>
+          <strong id="totalAfter">—</strong>
+        </div>
+        <div>
+          <span>減少大小</span>
+          <strong id="totalSaved">—</strong>
+        </div>
+      </div>
+
+      <div id="imageList" class="image-list">
+        <div class="list-empty">尚未上傳圖片。</div>
+      </div>
+    </section>
+
+    <p class="privacy-note">
+      圖片只在瀏覽器中進行處理。重新編碼可能移除 EXIF、
+      GPS 與色彩描述資訊；本工具不支援保留動畫。
+    </p>
+  </main>
+
+  <div class="compare-modal" id="compareModal" hidden>
+    <div class="compare-dialog" role="dialog" aria-modal="true"
+         aria-labelledby="compareTitle">
+      <div class="compare-header">
+        <h2 id="compareTitle">圖片品質比較</h2>
+        <button id="closeCompare" aria-label="關閉圖片比較">✕</button>
+      </div>
+      <div class="compare-grid">
+        <div>
+          <span>原始圖片</span>
+          <img id="beforePreview" alt="原始圖片預覽">
+        </div>
+        <div>
+          <span>輸出圖片</span>
+          <img id="afterPreview" alt="輸出圖片預覽">
+        </div>
+      </div>
+      <p>圖片以相同顯示尺寸並排呈現；可觀察文字、邊緣、漸層及色塊。</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <a href="../index.html" class="footer-brand">✦ WebToolbox</a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+</body>
+</html>

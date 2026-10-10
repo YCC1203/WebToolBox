@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d1a">
+  <meta name="description" content="免費線上 PDF 合併、分割、擷取和頁面排序工具。">
+
+  <title>PDF 工具 | WebToolbox</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >  
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/resize.css">
+  <link rel="stylesheet" href="../css/pdf.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="../js/pdf.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+
+    <nav class="nav-links" aria-label="主選單">
+      <a href="../index.html">首頁</a>
+      <a href="../index.html#tools">所有工具</a>
+    </nav>
+
+    <a href="../index.html#tools" class="nav-button">
+      返回工具箱 ↗
+    </a>
+  </header>
+
+  <main class="resize-page pdf-page">
+    <a class="back-link" href="../index.html#tools">
+      ← 返回所有工具
+    </a>
+
+    <div class="resize-heading">
+      <span class="eyebrow">DOCUMENT / PDF TOOLS</span>
+      <h1>PDF <span class="gradient-text">文件工具</span></h1>
+      <p>合併、重新排序、刪除、擷取 PDF 頁面。</p>
+    </div>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>01　上傳 PDF</h2>
+          <p>最多 10 份，每份上限 20 MB，合計最多 300 頁。</p>
+        </div>
+
+        <button id="clearAll" class="ghost-btn">
+          清空文件
+        </button>
+      </div>
+
+      <div id="dropZone" class="drop-zone"
+           role="button" tabindex="0"
+           aria-label="上傳 PDF 文件">
+        <div class="upload-icon">
+          ▤
+        </div>
+        <strong>拖曳 PDF 文件到這裡</strong>
+        <p>或點擊選擇檔案</p>
+        <span>PDF ONLY</span>
+      </div>
+
+      <input id="fileInput" type="file"
+             accept=".pdf,application/pdf"
+             multiple hidden>
+
+      <div class="file-summary">
+        <span id="fileCount">尚未上傳文件</span>
+        <span id="pageCount">總頁數：0</span>
+      </div>
+
+      <div id="fileList" class="pdf-file-list"></div>
+    </section>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>02　整理頁面</h2>
+          <p>使用箭頭調整順序，或刪除不需要的頁面。</p>
+        </div>
+
+        <button id="restoreBtn" class="ghost-btn" disabled>
+          還原原始排列
+        </button>
+      </div>
+
+      <div class="page-actions">
+        <button id="selectAll" class="ghost-btn" disabled>
+          全選頁面
+        </button>
+        <button id="deselectAll" class="ghost-btn" disabled>
+          取消選取
+        </button>
+        <button id="deleteSelected" class="ghost-btn danger" disabled>
+          刪除選取頁面
+        </button>
+      </div>
+
+      <p class="pdf-helper">
+        勾選頁面後可以批次刪除。頁碼顯示的是目前輸出順序，
+        不是原始文件的頁碼。
+      </p>
+
+      <div id="pagesList" class="pdf-pages-list">
+        <div class="list-empty">
+          上傳 PDF 後，這裡會顯示所有頁面。
+        </div>
+      </div>
+    </section>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>03　輸出 PDF</h2>
+          <p>選擇下載完整文件，或只擷取指定頁面。</p>
+        </div>
+        <span class="section-tag">EXPORT</span>
+      </div>
+
+      <div class="pdf-export-grid">
+        <div class="pdf-export-card">
+          <h3>合併／整理後下載</h3>
+          <p>依照目前頁面排列順序，匯出單一 PDF。</p>
+          <button id="exportAll" class="primary-action" disabled>
+            ↓ 下載完整 PDF
+          </button>
+        </div>
+
+        <div class="pdf-export-card">
+          <h3>擷取指定頁面</h3>
+          <p>例如輸入 1-3,5,8-10，只匯出這些頁面。</p>
+          <label for="pageRange">頁面範圍</label>
+          <input id="pageRange" type="text"
+                 placeholder="例如：1-3,5,8-10">
+          <button id="exportRange" class="primary-action" disabled>
+            ↓ 下載選取頁面
+          </button>
+        </div>
+
+        <div class="pdf-export-card">
+          <h3>逐頁分割</h3>
+          <p>將目前每一頁分成單獨的 PDF，打包成 ZIP。</p>
+          <button id="splitAll" class="primary-action" disabled>
+            ↓ 下載分割 ZIP
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-track pdf-progress">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <p id="status" class="resize-status"
+         role="status" aria-live="polite">
+        請先上傳 PDF。
+      </p>
+    </section>
+
+    <p class="privacy-note">
+      PDF 在瀏覽器內處理，不會上傳至 WebToolbox 伺服器。
+      密碼保護、特殊簽章或部分互動式 PDF 可能無法完整保留。
+      重新輸出的文件不應視為保留原始數位簽章的有效性。
+    </p>
+  </main>
+
+  <footer class="footer">
+    <a href="../index.html" class="footer-brand">
+      ✦ WebToolbox
+    </a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+</body>
+</html>

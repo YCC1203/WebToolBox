@@ -1,0 +1,324 @@
+
+.text-page {
+  max-width: 1180px;
+  min-height: calc(100vh - 160px);
+  margin: auto;
+  padding: 45px 24px 90px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 35px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.text-heading {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.text-heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -1.5px;
+  margin: 10px 0 12px;
+}
+
+.text-heading p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 2;
+}
+
+/* 卡片容器 */
+
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.text-panel {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 27px;
+  background: linear-gradient(145deg, #151b30, #101526);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 22px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.panel-title p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 5px 0 0;
+}
+
+.panel-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #b6a8ff;
+  padding: 5px 10px;
+  border: 1px solid #514785;
+  background: #7660ed17;
+  border-radius: 7px;
+}
+
+/* 文字編輯器 */
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#textInput {
+  flex: 1;
+  width: 100%;
+  min-height: 310px;
+  padding: 18px;
+  resize: vertical;
+  border: 1px solid #303a56;
+  border-radius: 13px;
+  background: #0b1120;
+  color: var(--text);
+  font-family: "Noto Sans TC", Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.9;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#textInput:focus {
+  border-color: #917bff;
+  box-shadow: 0 0 0 3px #8b75ff15;
+}
+
+#textInput::placeholder {
+  color: #7986a3;
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 17px;
+}
+
+.secondary-btn,
+.primary-small,
+.download-btn {
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.secondary-btn {
+  background: #1d263d;
+  border: 1px solid #35415d;
+  color: #c6cde0;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: #2a3551;
+}
+
+.secondary-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.primary-small,
+.download-btn {
+  border: 1px solid #8a78ef;
+  background: linear-gradient(120deg, #735cf2, #9568ec);
+  color: white;
+}
+
+.primary-small:hover,
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px #795cf044;
+}
+
+/* 統計數據 */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.stat-card {
+  min-width: 0;
+  padding: 19px;
+  border-radius: 12px;
+  border: 1px solid #2c3650;
+  background: #0d1426;
+}
+
+.stat-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.stat-card strong {
+  display: block;
+  color: #c3b8ff;
+  font-size: clamp(19px, 2vw, 27px);
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
+
+.stats-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+/* 文字轉換工具 */
+
+.operations-panel {
+  margin-top: 23px;
+}
+
+.operation-group-title {
+  margin: 30px 0 15px;
+  font-size: 14px;
+  color: #c6cde3;
+}
+
+.operation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.operation-grid button {
+  padding: 15px 12px;
+  border: 1px solid #34405e;
+  border-radius: 12px;
+  background: #121b30;
+  color: #dce2f7;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.operation-grid button:hover {
+  background: #29264a;
+  border-color: #9580ff;
+  transform: translateY(-2px);
+}
+
+.export-area {
+  margin-top: 37px;
+  padding: 23px;
+  border: 1px solid #4c4580;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #241f49, #151b31);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.export-area strong {
+  font-size: 14px;
+}
+
+.export-area p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 5px 0 0;
+}
+
+.download-btn {
+  flex-shrink: 0;
+}
+
+.text-status {
+  min-height: 24px;
+  margin: 20px 0 0;
+  color: #9ae6bf;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* 平板與手機 */
+
+@media (max-width: 850px) {
+  .editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #textInput {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 600px) {
+  .text-page {
+    padding: 28px 17px 65px;
+  }
+
+  .text-panel {
+    padding: 19px;
+  }
+
+  .text-heading {
+    margin-bottom: 30px;
+  }
+
+  .operation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .export-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .download-btn {
+    width: 100%;
+  }
+
+  .panel-title {
+    gap: 8px;
+  }
+
+  .panel-tag {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 380px) {
+  .operation-grid {
+    grid-template-columns: 1fr;
+  }
+}

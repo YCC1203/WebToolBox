@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d1a">
+  <meta name="description" content="免費線上文字統計與處理工具">
+
+  <title>文字處理器 | WebToolbox</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >  
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/text.css">
+  <link rel="stylesheet" href="../css/site.css">
+
+  <script src="../js/text.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="../index.html">首頁</a>
+      <a href="../index.html#tools">所有工具</a>
+    </nav>
+
+    <a class="nav-button" href="../index.html#tools">
+      返回工具箱 ↗
+    </a>
+  </header>
+
+  <main class="text-page">
+
+    <a href="../index.html#tools" class="back-link">
+      ← 返回所有工具
+    </a>
+
+    <div class="text-heading">
+      <span class="eyebrow">TEXT / UTILITIES</span>
+      <h1>線上<span class="gradient-text">文字處理器</span></h1>
+      <p>
+        統計字數、轉換大小寫、清理文字，
+        所有操作都能在瀏覽器內完成。
+      </p>
+    </div>
+
+    <!-- 文字編輯與統計 -->
+    <div class="editor-layout">
+
+      <section class="text-panel editor-panel">
+        <div class="panel-title">
+          <div>
+            <h2>文字編輯區</h2>
+            <p>輸入或貼上需要處理的文字</p>
+          </div>
+          <span class="panel-tag">EDITOR</span>
+        </div>
+
+        <textarea
+          id="textInput"
+          placeholder="在這裡輸入或貼上文字..."
+          spellcheck="false"
+          aria-label="要處理的文字"
+        ></textarea>
+
+        <div class="editor-actions">
+          <button id="undoBtn" class="secondary-btn" disabled>
+            ↶ 還原
+          </button>
+          <button id="clearBtn" class="secondary-btn">
+            清空文字
+          </button>
+          <button id="copyBtn" class="primary-small">
+            ⧉ 複製文字
+          </button>
+        </div>
+      </section>
+
+      <section class="text-panel stats-panel">
+        <div class="panel-title">
+          <div>
+            <h2>即時文字統計</h2>
+            <p>數據會隨著輸入自動更新</p>
+          </div>
+          <span class="panel-tag">ANALYTICS</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>總字元數</span>
+            <strong id="totalChars">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>不含空白</span>
+            <strong id="noSpaceChars">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>中文字數</span>
+            <strong id="chineseChars">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>英文單字數</span>
+            <strong id="englishWords">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>行數</span>
+            <strong id="lineCount">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>UTF-8 大小</span>
+            <strong id="byteCount">0 B</strong>
+          </div>
+        </div>
+
+        <p class="stats-note">
+          中文依漢字計算，英文依字母組成的單字計算；
+          空白與換行也會計入總字元數。
+        </p>
+      </section>
+
+    </div>
+
+    <!-- 轉換工具 -->
+    <section class="text-panel operations-panel">
+      <div class="panel-title">
+        <div>
+          <h2>文字轉換工具</h2>
+          <p>點擊功能後，直接修改上方文字內容</p>
+        </div>
+        <span class="panel-tag">TRANSFORM</span>
+      </div>
+
+      <h3 class="operation-group-title">大小寫轉換</h3>
+
+      <div class="operation-grid">
+        <button data-action="upper">AA　全部大寫</button>
+        <button data-action="lower">aa　全部小寫</button>
+        <button data-action="title">Aa　單字首字母大寫</button>
+      </div>
+
+      <h3 class="operation-group-title">空白與行數處理</h3>
+
+      <div class="operation-grid">
+        <button data-action="spaces">移除多餘空白</button>
+        <button data-action="empty">移除空白行</button>
+        <button data-action="trim">移除首尾空白</button>
+      </div>
+
+      <h3 class="operation-group-title">進階文字整理</h3>
+
+      <div class="operation-grid">
+        <button data-action="unique">移除重複行</button>
+        <button data-action="reverse">反轉行順序</button>
+        <button data-action="sort">依字母排序</button>
+      </div>
+
+      <div class="export-area">
+        <div>
+          <strong>完成文字處理了嗎？</strong>
+          <p>可複製結果，或下載為 UTF-8 TXT 檔案。</p>
+        </div>
+
+        <button id="downloadBtn" class="download-btn">
+          ↓ 下載 TXT
+        </button>
+      </div>
+    </section>
+
+    <p class="text-status" id="textStatus" role="status" aria-live="polite"></p>
+
+  </main>
+
+  <footer class="footer">
+    <a href="../index.html" class="footer-brand">✦ WebToolbox</a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+
+</body>
+</html>

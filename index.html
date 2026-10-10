@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d1a">
+  <meta
+    name="description"
+    content="WebToolbox 提供免費線上 QR Code 產生器、
+    密碼產生器、文字處理器、JSON 格式化、
+    圖片尺寸調整、圖片轉檔、圖片壓縮及 PDF 工具。"
+  >
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="WebToolbox｜免費線上工具箱">
+  <meta property="og:description"
+        content="免費、快速、實用的線上工具箱。圖片、PDF、文字及開發工具一站完成。">
+  <meta property="og:locale" content="zh_TW">
+
+  <title>WebToolbox | 免費線上工具箱</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/site.css">
+
+  <script src="./js/main.js" defer></script>
+  <script src="./js/site.js" defer></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="./index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+
+    <nav class="nav-links" aria-label="主選單">
+      <a href="#home">首頁</a>
+      <a href="#tools">所有工具</a>
+    </nav>
+
+    <a class="nav-button" href="#tools">探索工具 ↗</a>
+  </header>
+
+  <main id="home">
+
+    <section class="hero">
+      <div class="hero-glow"></div>
+
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="status-dot"></span>
+          YOUR ALL-IN-ONE TOOLBOX
+        </div>
+
+        <h1>
+          讓每個小工具<br>
+          <span class="gradient-text">都成為你的效率助手</span>
+        </h1>
+
+        <p class="hero-description">
+          無須安裝、快速簡單。<br>
+          將日常需要的實用工具，集中在同一個地方。
+        </p>
+
+        <a class="primary-button" href="#tools">
+          開始探索 <span>↗</span>
+        </a>
+
+        <div class="hero-features">
+          <span>✓ 免費使用</span>
+          <span>✓ 無須註冊</span>
+          <span>✓ 簡單快速</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="tools-section" id="tools">
+
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">DISCOVER TOOLS</span>
+          <h2>探索實用工具</h2>
+          <p>找到你需要的功能，讓事情變得更簡單。</p>
+        </div>
+
+        <span class="tool-count" id="toolCount"></span>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="搜尋你需要的工具..."
+            autocomplete="off"
+            aria-label="搜尋工具"
+          >
+          <span class="search-shortcut">SEARCH</span>
+        </label>
+
+        <div class="filters" id="filters">
+          <button class="filter-btn active" data-category="all">全部工具</button>
+          <button class="filter-btn" data-category="text">文字工具</button>
+          <button class="filter-btn" data-category="dev">開發工具</button>
+          <button class="filter-btn" data-category="image">圖片工具</button>
+          <button class="filter-btn" data-category="file">檔案工具</button>
+        </div>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid"></div>
+
+      <p class="empty-message" id="emptyMessage" hidden>
+        找不到符合條件的工具，試試其他關鍵字吧！
+      </p>
+
+    </section>
+
+    <section class="bottom-banner">
+      <div>
+        <span class="eyebrow">MORE TO COME</span>
+        <h2>更多實用功能，持續加入中。</h2>
+        <p>一個簡單的工具箱，讓日常工作更有效率。</p>
+      </div>
+      <a href="#tools" class="banner-link">查看所有工具 ↗</a>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <a href="#home" class="footer-brand">✦ WebToolbox</a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+</body>
+</html>

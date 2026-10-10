@@ -1,0 +1,288 @@
+
+/* QR Code 工具頁面 */
+
+.qr-page {
+  max-width: 1180px;
+  min-height: calc(100vh - 160px);
+  margin: auto;
+  padding: 45px 24px 100px;
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 35px;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.qr-heading {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.qr-heading h1 {
+  font-size: clamp(31px, 4vw, 48px);
+  letter-spacing: -1.5px;
+  margin: 10px 0 12px;
+}
+
+.qr-heading p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 2;
+}
+
+/* 左右兩欄 */
+
+.qr-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.qr-panel {
+  background: linear-gradient(145deg, #151b30, #101526);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  min-width: 0;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 25px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-step {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: #7660ed25;
+  color: #b3a5ff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.panel-heading h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.panel-heading p {
+  color: var(--muted);
+  margin: 3px 0 0;
+  font-size: 12px;
+}
+
+/* 表單 */
+
+.field {
+  margin-bottom: 24px;
+  min-width: 0;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field textarea,
+.field select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #0c1222;
+  color: var(--text);
+  padding: 14px 15px;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 135px;
+  line-height: 1.8;
+}
+
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--primary);
+}
+
+.field-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.color-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field input[type="color"] {
+  width: 100%;
+  height: 47px;
+  padding: 6px;
+  background: #0c1222;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  cursor: pointer;
+}
+
+.generate-button,
+.download-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.generate-button {
+  background: linear-gradient(120deg, #735cf2, #9a65ee);
+  box-shadow: 0 7px 25px #795cf02c;
+}
+
+.generate-button:hover,
+.download-button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px #795cf050;
+}
+
+.privacy-note {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  margin: 17px 0 0;
+}
+
+/* QR Code 預覽 */
+
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.qr-preview {
+  flex: 1;
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #39415d;
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at center, #5642a012, transparent 70%),
+    #0b1120;
+  padding: 25px;
+}
+
+.qr-output {
+  display: grid;
+  place-items: center;
+  width: min(100%, 290px);
+  min-width: 0;
+}
+
+.qr-output canvas,
+.qr-output img {
+  max-width: 100%;
+  height: auto;
+}
+
+.qr-output img {
+  display: block;
+}
+
+.qr-output.has-code {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px #0005;
+}
+
+.qr-placeholder {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.qr-placeholder span {
+  display: block;
+  font-size: 80px;
+  color: #6557a4;
+  line-height: 1.5;
+}
+
+.qr-status {
+  min-height: 25px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 22px 0 14px;
+}
+
+.download-button {
+  background: #2a3453;
+  border: 1px solid #465375;
+}
+
+.download-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 手機和平板 */
+
+@media (max-width: 800px) {
+  .qr-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .qr-page {
+    padding: 30px 18px 65px;
+  }
+
+  .qr-panel {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .qr-heading {
+    margin-bottom: 28px;
+  }
+
+  .color-row {
+    gap: 12px;
+  }
+
+  .qr-preview {
+    min-height: 280px;
+  }
+}

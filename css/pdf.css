@@ -1,0 +1,238 @@
+
+/* PDF 專屬樣式 */
+
+.pdf-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.pdf-file {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: #0c1426;
+  border: 1px solid #303a55;
+  border-radius: 12px;
+}
+
+.pdf-file-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 50px;
+  border-radius: 9px;
+  background: #59314d;
+  color: #ffb2bf;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pdf-file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pdf-file-info strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.pdf-file-info span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.pdf-pages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.pdf-page-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #303a55;
+  border-radius: 11px;
+  background: #0c1426;
+}
+
+.pdf-page-item:hover {
+  border-color: #63568f;
+}
+
+.pdf-page-number {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 40px;
+  border-radius: 9px;
+  background: #30264f;
+  color: #c6b6ff;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.pdf-page-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pdf-page-info strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.pdf-page-info span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.pdf-page-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #8b75ff;
+}
+
+.pdf-page-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.pdf-page-controls button {
+  width: 32px;
+  height: 34px;
+  border: 1px solid #465070;
+  border-radius: 8px;
+  background: #202a43;
+  color: #e1e4f6;
+}
+
+.pdf-page-controls button:hover:not(:disabled) {
+  background: #45376b;
+}
+
+.pdf-page-controls button:disabled {
+  opacity: 0.25;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ghost-btn.danger {
+  color: #ffb4b4;
+  border-color: #854653;
+}
+
+.ghost-btn.danger:hover:not(:disabled) {
+  background: #552b39;
+}
+
+.pdf-helper {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 17px;
+}
+
+/* 輸出選項 */
+
+.pdf-export-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.pdf-export-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #35405f;
+  background: #0d1529;
+}
+
+.pdf-export-card h3 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.pdf-export-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 0;
+  flex: 1;
+}
+
+.pdf-export-card label {
+  color: #bfc8df;
+  font-size: 12px;
+}
+
+.pdf-export-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #414a67;
+  background: #090f1f;
+  color: white;
+  font: inherit;
+  font-size: 13px;
+}
+
+.pdf-export-card input:focus {
+  outline: 2px solid #9580ff;
+  outline-offset: 2px;
+}
+
+.pdf-export-card .primary-action {
+  font-size: 12px;
+  padding: 13px 10px;
+}
+
+.pdf-progress {
+  margin-top: 25px;
+}
+
+@media (max-width: 850px) {
+  .pdf-export-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pdf-export-card p {
+    flex: auto;
+  }
+}
+
+@media (max-width: 500px) {
+  .pdf-page-item {
+    flex-wrap: wrap;
+  }
+
+  .pdf-page-info {
+    flex-basis: calc(100% - 110px);
+  }
+
+  .pdf-page-controls {
+    margin-left: auto;
+  }
+
+  .pdf-file {
+    align-items: flex-start;
+  }
+}

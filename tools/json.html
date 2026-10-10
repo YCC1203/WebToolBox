@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d1a">
+  <meta name="description"
+        content="免費線上 JSON 格式化、壓縮與語法驗證工具">
+
+  <title>JSON 格式化工具 | WebToolbox</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/json.css">
+  <link rel="stylesheet" href="../css/site.css">
+
+  <script src="../js/json.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+
+    <nav class="nav-links" aria-label="主選單">
+      <a href="../index.html">首頁</a>
+      <a href="../index.html#tools">所有工具</a>
+    </nav>
+
+    <a class="nav-button" href="../index.html#tools">
+      返回工具箱 ↗
+    </a>
+  </header>
+
+  <main class="json-page">
+
+    <a href="../index.html#tools" class="back-link">
+      ← 返回所有工具
+    </a>
+
+    <div class="json-heading">
+      <span class="eyebrow">DEVELOPER / JSON TOOLS</span>
+      <h1>JSON <span class="gradient-text">格式化工具</span></h1>
+      <p>
+        格式化、壓縮、驗證 JSON 資料。
+        快速整理程式開發時常用的資料格式。
+      </p>
+    </div>
+
+    <section class="json-workspace">
+
+      <div class="workspace-toolbar">
+        <div class="toolbar-title">
+          <span class="toolbar-dot"></span>
+          JSON WORKSPACE
+        </div>
+
+        <label class="indent-setting" for="indentSize">
+          縮排方式
+          <select id="indentSize">
+            <option value="2">2 空格</option>
+            <option value="4">4 空格</option>
+            <option value="tab">Tab</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="json-layout">
+
+        <!-- 左側輸入 -->
+        <section class="json-editor">
+          <div class="editor-header">
+            <div>
+              <h2>輸入 JSON</h2>
+              <p>貼上 JSON 或匯入檔案</p>
+            </div>
+            <span class="editor-tag">INPUT</span>
+          </div>
+
+          <textarea
+            id="jsonInput"
+            spellcheck="false"
+            placeholder='{"name":"WebToolbox","tools":4}'
+            aria-label="輸入 JSON"
+          ></textarea>
+
+          <div class="editor-footer">
+            <span id="inputSize">0 B</span>
+            <div class="input-actions">
+              <button id="importBtn" class="subtle-button">
+                匯入檔案
+              </button>
+              <button id="clearBtn" class="subtle-button">
+                清空
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 右側輸出 -->
+        <section class="json-editor">
+          <div class="editor-header">
+            <div>
+              <h2>處理結果</h2>
+              <p>格式化後的 JSON 內容</p>
+            </div>
+            <span class="editor-tag">OUTPUT</span>
+          </div>
+
+          <textarea
+            id="jsonOutput"
+            spellcheck="false"
+            readonly
+            placeholder="處理結果將顯示在這裡..."
+            aria-label="JSON 處理結果"
+          ></textarea>
+
+          <div class="editor-footer">
+            <span id="outputSize">0 B</span>
+            <div class="input-actions">
+              <button id="copyBtn" class="subtle-button" disabled>
+                複製結果
+              </button>
+              <button id="downloadBtn" class="subtle-button" disabled>
+                ↓ 下載
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="json-actions">
+        <button id="formatBtn" class="action-primary">
+          ✦ 美化 JSON
+        </button>
+
+        <button id="minifyBtn" class="action-secondary">
+          壓縮 JSON
+        </button>
+
+        <button id="validateBtn" class="action-secondary">
+          驗證語法
+        </button>
+      </div>
+
+      <div id="jsonStatus" class="json-status"
+           role="status" aria-live="polite">
+        <span id="statusIcon">◇</span>
+        <div>
+          <strong id="statusTitle">準備就緒</strong>
+          <p id="statusMessage">
+            請輸入 JSON 資料並選擇操作。
+          </p>
+        </div>
+      </div>
+
+      <input
+        type="file"
+        id="fileInput"
+        accept=".json,application/json"
+        hidden
+      >
+
+    </section>
+
+    <div class="json-hint">
+      <strong>使用提示</strong>
+      <p>
+        JSON 的屬性名稱與字串必須使用雙引號。
+        不支援註解、尾端多餘逗號、
+        undefined 或 NaN。
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <a href="../index.html" class="footer-brand">
+      ✦ WebToolbox
+    </a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+</body>
+</html>

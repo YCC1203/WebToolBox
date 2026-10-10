@@ -1,0 +1,367 @@
+
+.json-page {
+  max-width: 1250px;
+  min-height: calc(100vh - 160px);
+  margin: auto;
+  padding: 45px 24px 90px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 35px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.json-heading {
+  text-align: center;
+  margin-bottom: 43px;
+}
+
+.json-heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -1.5px;
+  margin: 10px 0 12px;
+}
+
+.json-heading p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 2;
+}
+
+/* 工作區 */
+
+.json-workspace {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #101628;
+  overflow: hidden;
+}
+
+.workspace-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 24px;
+  background: #171d32;
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: #b9c2dc;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.toolbar-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8b75ff;
+  box-shadow: 0 0 13px #8b75ff;
+}
+
+.indent-setting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.indent-setting select {
+  padding: 8px 12px;
+  border: 1px solid #414a67;
+  border-radius: 9px;
+  background: #0c1222;
+  color: white;
+  font: inherit;
+}
+
+/* 左右編輯區 */
+
+.json-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.json-editor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 22px;
+}
+
+.json-editor:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 19px;
+}
+
+.editor-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.editor-header p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+.editor-tag {
+  padding: 5px 9px;
+  border-radius: 7px;
+  border: 1px solid #514785;
+  background: #7660ed17;
+  color: #b6a8ff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+/* JSON 文字區 */
+
+.json-editor textarea {
+  width: 100%;
+  min-height: 420px;
+  resize: vertical;
+  padding: 19px;
+  border-radius: 12px;
+  border: 1px solid #303a56;
+  background: #090f1e;
+  color: #e8edff;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.85;
+  tab-size: 2;
+  outline: none;
+  white-space: pre;
+  overflow: auto;
+}
+
+.json-editor textarea:focus {
+  border-color: #917bff;
+  box-shadow: 0 0 0 3px #8b75ff14;
+}
+
+.json-editor textarea::placeholder {
+  color: #727d99;
+}
+
+#jsonOutput {
+  color: #b5defd;
+}
+
+.editor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 15px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.input-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.subtle-button {
+  padding: 8px 13px;
+  border: 1px solid #3d4968;
+  border-radius: 9px;
+  background: #1b2640;
+  color: #d2daed;
+  font-size: 11px;
+  transition: 0.2s;
+}
+
+.subtle-button:hover:not(:disabled) {
+  background: #302951;
+  border-color: #8b75ff;
+}
+
+.subtle-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 格式化操作按鈕 */
+
+.json-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.action-primary,
+.action-secondary {
+  flex: 1;
+  min-width: 145px;
+  padding: 14px 19px;
+  border-radius: 11px;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.action-primary {
+  border: 1px solid #a08aff;
+  background: linear-gradient(110deg, #735cf2, #9568ec);
+}
+
+.action-secondary {
+  border: 1px solid #455272;
+  background: #222c46;
+}
+
+.action-primary:hover,
+.action-secondary:hover {
+  transform: translateY(-2px);
+}
+
+.action-secondary:hover {
+  background: #343056;
+}
+
+/* 狀態訊息 */
+
+.json-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin: 0 24px 24px;
+  padding: 17px 19px;
+  border: 1px solid #394763;
+  border-radius: 12px;
+  background: #172138;
+}
+
+.json-status > span {
+  font-size: 22px;
+  color: #ac9cff;
+  line-height: 1;
+}
+
+.json-status strong {
+  font-size: 13px;
+}
+
+.json-status p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.json-status.success {
+  border-color: #327761;
+  background: #142c2b;
+}
+
+.json-status.success > span {
+  color: #70dfb0;
+}
+
+.json-status.error {
+  border-color: #9e5361;
+  background: #321d2b;
+}
+
+.json-status.error > span {
+  color: #ff919e;
+}
+
+.json-hint {
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #3e4360;
+  border-radius: 13px;
+  background: #171c30;
+}
+
+.json-hint strong {
+  font-size: 13px;
+  color: #c2b6ff;
+}
+
+.json-hint p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 6px 0 0;
+}
+
+/* 手機與平板 */
+
+@media (max-width: 850px) {
+  .json-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .json-editor:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .json-editor textarea {
+    min-height: 290px;
+  }
+}
+
+@media (max-width: 600px) {
+  .json-page {
+    padding: 28px 17px 65px;
+  }
+
+  .json-heading {
+    margin-bottom: 30px;
+  }
+
+  .workspace-toolbar,
+  .json-actions {
+    padding: 16px;
+  }
+
+  .json-editor {
+    padding: 16px;
+  }
+
+  .json-actions {
+    flex-direction: column;
+  }
+
+  .action-primary,
+  .action-secondary {
+    width: 100%;
+    flex: auto;
+  }
+
+  .json-status {
+    margin: 0 16px 16px;
+  }
+}

@@ -1,0 +1,398 @@
+
+.resize-page {
+  max-width: 1150px;
+  margin: auto;
+  min-height: calc(100vh - 160px);
+  padding: 45px 24px 90px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 30px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.back-link:hover { color: var(--primary); }
+
+.resize-heading {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.resize-heading h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -1.5px;
+  margin: 10px 0 12px;
+}
+
+.resize-heading p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.resize-panel {
+  padding: 27px;
+  margin-bottom: 23px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #151b30, #101526);
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  margin-bottom: 23px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.section-title p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.section-tag {
+  color: #bbaaff;
+  background: #7660ed1c;
+  border: 1px solid #514785;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.ghost-btn {
+  flex-shrink: 0;
+  border: 1px solid #4b5575;
+  border-radius: 10px;
+  background: #202a43;
+  color: #dce3f6;
+  padding: 10px 15px;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.ghost-btn:hover:not(:disabled) {
+  border-color: #a08cff;
+  background: #363052;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 上傳區 */
+
+.drop-zone {
+  padding: 46px 20px;
+  text-align: center;
+  border: 2px dashed #514a87;
+  border-radius: 17px;
+  background: #7660ed0b;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.drop-zone:hover,
+.drop-zone.dragover,
+.drop-zone:focus-visible {
+  border-color: #ac99ff;
+  background: #7660ed1b;
+}
+
+.upload-icon {
+  margin: 0 auto 15px;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 17px;
+  background: #7660ed2b;
+  color: #b5a4ff;
+  font-size: 37px;
+}
+
+.drop-zone strong {
+  display: block;
+  font-size: 17px;
+}
+
+.drop-zone p {
+  color: var(--muted);
+  margin: 7px 0 14px;
+  font-size: 13px;
+}
+
+.drop-zone span {
+  color: #a99aff;
+  font-size: 11px;
+}
+
+.file-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 17px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* 設定區 */
+
+.setting-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 23px;
+}
+
+.field {
+  min-width: 0;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field input[type="number"],
+.field select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #394360;
+  border-radius: 11px;
+  outline: none;
+  background: #0b1120;
+  color: white;
+  font: inherit;
+  font-size: 14px;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #9e89ff;
+}
+
+.field input[type="range"] {
+  width: 100%;
+  accent-color: #9580ff;
+  cursor: pointer;
+}
+
+.field small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+#qualityValue {
+  color: #b5a5ff;
+}
+
+.setting-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 27px;
+}
+
+.setting-options label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  color: #dce2f6;
+  font-size: 13px;
+}
+
+.setting-options input {
+  width: 17px;
+  height: 17px;
+  accent-color: #8b75ff;
+}
+
+.setting-help {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 17px 0 26px;
+}
+
+.primary-action {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #a08aff;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #735cf2, #9a65ee);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.primary-action:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px #795cf050;
+}
+
+/* 處理進度 */
+
+.progress-track {
+  height: 7px;
+  overflow: hidden;
+  background: #303950;
+  border-radius: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #816aff, #59d4f9);
+  transition: width 0.2s;
+}
+
+.resize-status {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 16px 0 20px;
+}
+
+/* 圖片結果 */
+
+.image-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-empty {
+  padding: 45px 15px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed #394360;
+  border-radius: 13px;
+  font-size: 13px;
+}
+
+.image-item {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 14px;
+  border: 1px solid #303a55;
+  border-radius: 13px;
+  background: #0c1426;
+}
+
+.image-thumb {
+  flex-shrink: 0;
+  width: 92px;
+  height: 76px;
+  object-fit: contain;
+  border-radius: 9px;
+  background: #1e2841;
+}
+
+.image-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.image-name {
+  display: block;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-meta,
+.image-result {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.image-result {
+  color: #a4e6cf;
+}
+
+.image-download {
+  flex-shrink: 0;
+  padding: 9px 13px;
+  border: 1px solid #7466b5;
+  border-radius: 9px;
+  background: #302750;
+  color: #dcd4ff;
+  font-size: 12px;
+}
+
+.image-download:hover:not(:disabled) {
+  background: #4b3a7d;
+}
+
+.privacy-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+/* 響應式 */
+
+@media (max-width: 650px) {
+  .resize-page {
+    padding: 28px 17px 65px;
+  }
+
+  .resize-panel {
+    padding: 19px;
+  }
+
+  .section-title {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .setting-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .file-summary {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .drop-zone {
+    padding: 35px 15px;
+  }
+
+  .image-item {
+    flex-wrap: wrap;
+  }
+
+  .image-info {
+    flex-basis: calc(100% - 115px);
+  }
+
+  .image-download {
+    width: 100%;
+  }
+}

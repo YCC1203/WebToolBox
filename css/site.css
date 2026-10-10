@@ -1,0 +1,231 @@
+
+/* ===== WebToolbox 共用視覺系統 ===== */
+
+:root {
+  color-scheme: dark;
+}
+
+::selection {
+  background: #8b75ff;
+  color: #fff;
+}
+
+/* 統一操作元件 */
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #a99aff;
+  outline-offset: 3px;
+}
+
+/* 全站頂部閱讀進度條 */
+#scrollProgress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b75ff, #59d4f9);
+  pointer-events: none;
+}
+
+/* 返回頂部按鈕 */
+#backToTop {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  width: 47px;
+  height: 47px;
+  border-radius: 14px;
+  border: 1px solid #7264b8;
+  background: #241e45;
+  color: #e0d9ff;
+  font-size: 22px;
+  box-shadow: 0 8px 30px #0008;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.2s,
+    visibility 0.2s,
+    transform 0.2s,
+    background 0.2s;
+}
+
+#backToTop.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#backToTop:hover {
+  background: #48377f;
+  transform: translateY(-3px);
+}
+
+/* 共用玻璃質感 */
+.navbar {
+  box-shadow: 0 5px 30px #00000018;
+}
+
+/* 頁面切換後視覺一致 */
+main {
+  animation: pageEnter 0.35s ease-out both;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 首頁工具卡片收藏功能 */
+.tool-card {
+  position: relative;
+  cursor: default;
+}
+
+.card-open {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 100%;
+  background: none;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+}
+
+.card-open .card-top {
+  padding-right: 45px;
+}
+
+.card-open:hover .card-arrow {
+  color: #c3b8ff;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 19px;
+  right: 19px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid #455070;
+  background: #202944;
+  color: #9ca8c2;
+  font-size: 21px;
+  line-height: 1;
+  transition: background 0.2s, color 0.2s;
+}
+
+.favorite-btn:hover {
+  background: #39335d;
+  color: #f8d47a;
+}
+
+.favorite-btn.is-favorite {
+  color: #ffd474;
+  border-color: #8b7041;
+  background: #4a382b;
+}
+
+.filter-btn.favorites-active {
+  color: #ffd474;
+  border-color: #a78443;
+  background: #48382250;
+}
+
+/* 顯示空狀態時提供一致間距 */
+.empty-message {
+  border: 1px dashed #394360;
+  border-radius: 16px;
+  background: #101627;
+}
+
+/* 小螢幕 */
+@media (max-width: 600px) {
+  /* 手機版仍可使用首頁與所有工具導覽 */
+  .navbar {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 68px;
+    row-gap: 0;
+    padding: 12px 18px;
+  }
+
+  .nav-links {
+    display: flex;
+    order: 3;
+    width: 100%;
+    gap: 24px;
+    padding: 10px 0 2px;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .nav-button {
+    margin-left: auto;
+  }
+
+  #backToTop {
+    right: 16px;
+    bottom: 16px;
+    width: 43px;
+    height: 43px;
+  }
+
+  .tools-section,
+  .qr-page,
+  .password-page,
+  .text-page,
+  .json-page {
+    scroll-margin-top: 120px;
+  }
+}
+
+/* 尊重使用者減少動態效果的設定 */
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none;
+  }
+
+  #backToTop,
+  .favorite-btn {
+    transition: none;
+  }
+}

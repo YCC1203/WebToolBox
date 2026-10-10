@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d1a">
+  <meta name="description" content="免費線上圖片尺寸調整，支援批次處理和 ZIP 下載。">
+
+  <title>圖片尺寸調整 | WebToolbox</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >  
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/resize.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="../js/resize.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+    <nav class="nav-links" aria-label="主選單">
+      <a href="../index.html">首頁</a>
+      <a href="../index.html#tools">所有工具</a>
+    </nav>
+    <a href="../index.html#tools" class="nav-button">返回工具箱 ↗</a>
+  </header>
+
+  <main class="resize-page">
+    <a class="back-link" href="../index.html#tools">← 返回所有工具</a>
+
+    <div class="resize-heading">
+      <span class="eyebrow">IMAGE / RESIZER</span>
+      <h1>圖片<span class="gradient-text">尺寸調整</span></h1>
+      <p>批次調整解析度、保持長寬比例，並下載處理結果。</p>
+    </div>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>01　上傳圖片</h2>
+          <p>支援 JPG、PNG、WebP，最多 20 張，每張 20 MB。</p>
+        </div>
+        <button id="clearAll" class="ghost-btn">清空圖片</button>
+      </div>
+
+      <div id="dropZone" class="drop-zone" tabindex="0"
+           role="button" aria-label="點擊或拖曳上傳圖片">
+        <div class="upload-icon">⇧</div>
+        <strong>拖曳圖片到這裡</strong>
+        <p>或點擊選擇圖片檔案</p>
+        <span>JPG / PNG / WebP</span>
+      </div>
+
+      <input id="fileInput" type="file"
+             accept="image/jpeg,image/png,image/webp"
+             multiple hidden>
+
+      <div class="file-summary">
+        <span id="fileCount">尚未選擇圖片</span>
+        <span id="sourceSize">總大小：0 B</span>
+      </div>
+    </section>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>02　調整設定</h2>
+          <p>以下設定會套用到所有圖片。</p>
+        </div>
+        <span class="section-tag">SETTINGS</span>
+      </div>
+
+      <div class="setting-grid">
+        <div class="field">
+          <label for="targetWidth">目標寬度（px）</label>
+          <input id="targetWidth" type="number"
+                 min="1" max="8192" value="1200">
+        </div>
+
+        <div class="field">
+          <label for="targetHeight">目標高度（px）</label>
+          <input id="targetHeight" type="number"
+                 min="1" max="8192" value="800">
+        </div>
+
+        <div class="field">
+          <label for="outputFormat">輸出格式</label>
+          <select id="outputFormat">
+            <option value="original">維持原始格式</option>
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="quality">輸出品質 <span id="qualityValue">90%</span></label>
+          <input id="quality" type="range" min="50" max="100" value="90">
+          <small>適用於 JPG、WebP；PNG 不使用此品質設定。</small>
+        </div>
+      </div>
+
+      <div class="setting-options">
+        <label><input id="lockRatio" type="checkbox" checked> 鎖定長寬比例</label>
+        <label><input id="noUpscale" type="checkbox" checked> 不放大小圖片</label>
+      </div>
+
+      <p class="setting-help">
+        鎖定比例時，以設定的寬度為基準，每張圖片分別計算高度。
+        批次處理時，相同目標寬度不代表每張圖片的目標高度都相同。
+      </p>
+
+      <button id="processBtn" class="primary-action" disabled>
+        ✦ 開始調整圖片
+      </button>
+    </section>
+
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>03　圖片預覽與結果</h2>
+          <p>可查看原始尺寸、處理後尺寸與檔案大小。</p>
+        </div>
+        <button id="downloadAll" class="ghost-btn" disabled>
+          ↓ 下載全部 ZIP
+        </button>
+      </div>
+
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <p id="status" class="resize-status" role="status" aria-live="polite">
+        請先上傳圖片。
+      </p>
+
+      <div id="imageList" class="image-list">
+        <div class="list-empty">尚無圖片，請先從上方選擇檔案。</div>
+      </div>
+    </section>
+
+    <p class="privacy-note">
+      圖片在瀏覽器中處理，不會上傳到我們的伺服器。
+      一般圖片重新輸出後可能移除 EXIF 中繼資料；動態圖片不支援保留動畫。
+    </p>
+  </main>
+
+  <footer class="footer">
+    <a href="../index.html" class="footer-brand">✦ WebToolbox</a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+</body>
+</html>

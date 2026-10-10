@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090d1a">
+
+  <meta name="description"
+        content="免費線上圖片格式轉換器，支援 JPG、PNG、WebP 與批次下載。">
+
+  <title>圖片格式轉換 | WebToolbox</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/resize.css">
+  <link rel="stylesheet" href="../css/convert.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="../js/convert.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>Web<span class="accent">Toolbox</span></span>
+    </a>
+
+    <nav class="nav-links" aria-label="主選單">
+      <a href="../index.html">首頁</a>
+      <a href="../index.html#tools">所有工具</a>
+    </nav>
+
+    <a href="../index.html#tools" class="nav-button">
+      返回工具箱 ↗
+    </a>
+  </header>
+
+  <main class="resize-page converter-page">
+    <a href="../index.html#tools" class="back-link">
+      ← 返回所有工具
+    </a>
+
+    <div class="resize-heading">
+      <span class="eyebrow">IMAGE / CONVERTER</span>
+      <h1>圖片<span class="gradient-text">格式轉換器</span></h1>
+      <p>
+        JPG、PNG、WebP 自由轉換，
+        保留原始解析度，支援批次下載。
+      </p>
+    </div>
+
+    <!-- 上傳區 -->
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>01　上傳圖片</h2>
+          <p>最多 20 張，每張上限 20 MB。</p>
+        </div>
+        <button id="clearAll" class="ghost-btn">
+          清空圖片
+        </button>
+      </div>
+
+      <div id="dropZone" class="drop-zone"
+           tabindex="0" role="button"
+           aria-label="上傳圖片">
+        <div class="upload-icon">⇧</div>
+        <strong>拖曳圖片到這裡</strong>
+        <p>或點擊選擇檔案</p>
+        <span>JPG / PNG / WebP</span>
+      </div>
+
+      <input type="file" id="fileInput"
+             accept="image/jpeg,image/png,image/webp"
+             multiple hidden>
+
+      <div class="file-summary">
+        <span id="fileCount">尚未選擇圖片</span>
+        <span id="sourceSize">總大小：0 B</span>
+      </div>
+    </section>
+
+    <!-- 格式設定 -->
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>02　轉換設定</h2>
+          <p>設定圖片輸出格式與品質。</p>
+        </div>
+        <span class="section-tag">CONVERSION</span>
+      </div>
+
+      <div class="setting-grid">
+        <div class="field">
+          <label for="outputFormat">目標格式</label>
+          <select id="outputFormat">
+            <option value="image/webp">WebP（推薦）</option>
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="quality">
+            輸出品質
+            <span id="qualityValue">90%</span>
+          </label>
+          <input type="range" id="quality"
+                 min="50" max="100" value="90">
+          <small>
+            JPG、WebP 使用此品質設定，
+            PNG 不受此滑桿影響。
+          </small>
+        </div>
+      </div>
+
+      <div class="setting-grid converter-extra">
+        <div class="field">
+          <label for="backgroundColor">
+            JPG 透明區域背景色
+          </label>
+          <div class="background-field">
+            <input type="color" id="backgroundColor"
+                   value="#ffffff">
+            <span id="backgroundValue">#FFFFFF</span>
+          </div>
+          <small>
+            JPG 不支援透明度，透明區域會填入此顏色。
+          </small>
+        </div>
+
+        <div class="field">
+          <label>解析度</label>
+          <div class="fixed-resolution">
+            <span>✓</span> 保留原始圖片解析度
+          </div>
+          <small>不進行縮放或裁切。</small>
+        </div>
+      </div>
+
+      <div class="converter-info">
+        <strong>格式說明</strong>
+        <p>
+          WebP 適合一般網站圖片；
+          JPG 適合不需要透明度的照片；
+          PNG 適合需要無損像素輸出或透明背景的圖片。
+        </p>
+      </div>
+
+      <button id="convertBtn" class="primary-action" disabled>
+        ✦ 開始轉換圖片
+      </button>
+    </section>
+
+    <!-- 結果區 -->
+    <section class="resize-panel">
+      <div class="section-title">
+        <div>
+          <h2>03　轉換結果</h2>
+          <p>比較轉換前後檔案大小並下載。</p>
+        </div>
+        <button id="downloadAll"
+                class="ghost-btn" disabled>
+          ↓ 下載全部 ZIP
+        </button>
+      </div>
+
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <p id="status" class="resize-status"
+         role="status" aria-live="polite">
+        請先上傳圖片。
+      </p>
+
+      <div id="imageList" class="image-list">
+        <div class="list-empty">
+          尚未上傳圖片。
+        </div>
+      </div>
+    </section>
+
+    <p class="privacy-note">
+      所有圖片在瀏覽器內處理，不會上傳到我們的伺服器。
+      重新編碼可能移除 EXIF、GPS 等中繼資料，
+      也可能改變色彩描述資訊。
+    </p>
+  </main>
+
+  <footer class="footer">
+    <a href="../index.html" class="footer-brand">
+      ✦ WebToolbox
+    </a>
+    <p>Made for simplicity and productivity.</p>
+    <span>© <span id="year"></span> WebToolbox</span>
+  </footer>
+</body>
+</html>
