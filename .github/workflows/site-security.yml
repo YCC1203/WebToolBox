@@ -1,0 +1,36 @@
+name: WebToolbox security checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check local HTML references
+        run: node scripts/check-site.js
+      - name: Check CSP, SRI and sensitive files
+        run: node scripts/check-security.js
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            node --check "$f"
+          done < <(find js scripts -type f -name '*.js' -print0)
