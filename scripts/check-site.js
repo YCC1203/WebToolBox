@@ -14,6 +14,7 @@ const pages = [
   "tools/convert.html",
   "tools/compress.html",
   "tools/crop.html",
+  "tools/watermark.html",
   "tools/pdf.html"
 ];
 

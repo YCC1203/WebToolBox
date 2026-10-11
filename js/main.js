@@ -70,6 +70,12 @@ const toolIcons = {
     <path d="M13 16h3v-3"/>
   `,
 
+  watermark: `
+    <path d="M4 4h16v16H4z"/>
+    <path d="M7 15l3-4 3 3 2-2 3 3"/>
+    <circle cx="16.5" cy="8.5" r="1.5"/>
+    <path d="M7 19h10"/>
+  `,
   pdf: `
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
     <path d="M14 2v6h6"/>
@@ -182,6 +188,16 @@ const tools = [
     color: "blue",
     ready: true,
     url: "./tools/crop.html"
+  },
+  {
+    id: "watermark",
+    name: "圖片浮水印",
+    description: "文字與 Logo 浮水印、透明度、九宮格位置及 PNG 下載。",
+    category: "image",
+    icon: "▧",
+    color: "purple",
+    ready: true,
+    url: "./tools/watermark.html"
   },
   {
     id: "pdf",

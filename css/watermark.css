@@ -1,0 +1,33 @@
+.watermark-page {max-width:1080px;margin:0 auto;padding:40px 24px 90px;min-width:0}
+.watermark-back {display:inline-block;color:#b8b0eb;font-size:13px;margin-bottom:28px}
+.watermark-heading {text-align:center;margin-bottom:34px}
+.watermark-heading h1 {font-size:clamp(30px,5vw,48px);line-height:1.4;margin:8px 0}
+.watermark-heading p,.watermark-help {color:#a7b3ce;font-size:13px;line-height:1.8}
+.watermark-panel {border:1px solid #303a56;border-radius:18px;background:rgba(19,26,46,.92);padding:26px;margin:20px 0;min-width:0}
+.watermark-panel h2 {font-size:19px;margin:0 0 22px}
+.watermark-upload {display:inline-block;cursor:pointer;background:#7561ed;padding:10px 18px;border-radius:10px;color:white;font-weight:700}
+.watermark-page input[type=file] {max-width:100%;display:block;margin-top:14px;font-size:13px;color:#c6d0e3}
+.watermark-page input[type=file]::file-selector-button {background:#2c3554;color:white;border:1px solid #53628c;border-radius:8px;padding:8px 12px;margin-right:12px;cursor:pointer}
+.watermark-mode {display:flex;gap:24px;flex-wrap:wrap;border:1px solid #3b4565;border-radius:12px;padding:14px 18px;margin:0 0 20px}
+.watermark-mode legend {padding:0 6px;color:#bcc7df;font-weight:700}
+.watermark-mode label {cursor:pointer}
+.watermark-field {display:flex;flex-direction:column;gap:8px;min-width:0;margin-bottom:20px}
+.watermark-field label {font-size:13px;color:#d9e0f0;font-weight:700}
+.watermark-field input[type=text] {width:100%;background:#0d1427;border:1px solid #46516f;padding:12px 14px;border-radius:10px;color:white}
+.watermark-field input[type=range] {width:100%;accent-color:#9782ff;cursor:pointer}
+.watermark-field input[type=color] {width:70px;height:40px;background:transparent;border:0;padding:0;cursor:pointer}
+.watermark-field small,.watermark-position small {font-size:12px;color:#9fabca}
+.watermark-settings-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.watermark-position {display:flex;align-items:flex-start;flex-direction:column;gap:10px}
+.watermark-position > span {font-size:13px;font-weight:700}
+.watermark-positions {display:grid;grid-template-columns:repeat(3,48px);gap:7px}
+.watermark-positions button {width:48px;height:42px;border:1px solid #485574;background:#151e36;color:#dae2f4;border-radius:9px;font-size:21px;cursor:pointer}
+.watermark-positions button.selected,.watermark-positions button:hover {border-color:#ae9cff;background:#6652d5;color:white}
+.watermark-preview {display:flex;align-items:center;justify-content:center;min-height:240px;border:1px dashed #3c4865;border-radius:13px;background:repeating-conic-gradient(#2a3144 0% 25%,#222a3c 0% 50%) 50%/20px 20px;overflow:hidden;position:relative;padding:12px}
+#previewCanvas {max-width:100%;height:auto;display:none;object-fit:contain;max-height:65vh}
+#previewEmpty {color:#c4cce0;text-align:center;background:#10172bc9;padding:12px 18px;border-radius:9px}
+.watermark-status {color:#c3cbe1;font-size:13px;overflow-wrap:anywhere}
+.watermark-download {border:none;border-radius:10px;background:linear-gradient(115deg,#7461ec,#a076ee);color:white;font-weight:700;padding:12px 22px;min-height:45px;cursor:pointer}
+.watermark-download:disabled {opacity:.45;cursor:not-allowed}
+.watermark-panel [hidden] {display:none !important}
+@media(max-width:670px){.watermark-page{padding:28px 16px 60px}.watermark-panel{padding:18px}.watermark-settings-grid{grid-template-columns:1fr;gap:0}.watermark-mode{gap:12px}.watermark-preview{min-height:180px}.watermark-download{width:100%}}

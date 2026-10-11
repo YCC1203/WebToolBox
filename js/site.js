@@ -100,7 +100,7 @@
   const RECENT_TOOLS_KEY = "webtoolbox-recent";
   const knownToolIds = new Set([
     "qr", "password", "text", "json",
-    "resize", "convert", "compress", "pdf"
+    "resize", "convert", "compress", "crop", "watermark", "pdf"
   ]);
 
   function recordRecentTool() {
