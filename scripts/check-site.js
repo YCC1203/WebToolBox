@@ -13,6 +13,7 @@ const pages = [
   "tools/resize.html",
   "tools/convert.html",
   "tools/compress.html",
+  "tools/crop.html",
   "tools/pdf.html"
 ];
 

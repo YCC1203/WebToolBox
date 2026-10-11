@@ -218,16 +218,10 @@ function canvasToBlob(canvas, type, q) {
 
 // 品質由高往低，最低不低於滑桿設定
 function qualityCandidates(floor) {
-  const values = [
-    0.98, 0.96, 0.94, 0.92, 0.90,
-    0.88, 0.86, 0.84, 0.82, 0.80
-  ];
-
-  values.push(floor);
-
-  return [...new Set(values)]
-    .filter(q => q >= floor - 0.00001)
-    .sort((a, b) => b - a);
+  // 最多測試 5 個高品質值；最低品質永遠不低於使用者設定。
+  const anchors = [0.96, 0.92, 0.88, 0.84];
+  const candidates = [...new Set([...anchors.filter(q => q >= floor), floor])];
+  return candidates.sort((a, b) => b - a);
 }
 
 // ===== 壓縮單張圖片 =====
@@ -329,7 +323,7 @@ async function compressImage(item, index) {
     quality: acceptedQuality,
     width: item.width,
     height: item.height,
-    previewUrl: URL.createObjectURL(blob)
+    previewUrl: retainedOriginal ? null : URL.createObjectURL(blob)
   };
 }
 
@@ -464,6 +458,7 @@ async function compressAll() {
   let success = 0;
   let failed = 0;
   let fallback = 0;
+  const began = performance.now();
   const toastId = wtLoading(`正在壓縮 ${images.length} 張圖片...`);
 
   try {
@@ -488,7 +483,7 @@ async function compressAll() {
             quality: null,
             width: item.width,
             height: item.height,
-            previewUrl: URL.createObjectURL(item.file)
+            previewUrl: null
         };
 
         success++;
@@ -520,7 +515,7 @@ async function compressAll() {
 
     message(
       `完成：成功 ${success} 張，失敗 ${failed} 張。` +
-      "沒有節省空間的圖片會保留原檔。"
+      `沒有節省空間的圖片會保留原檔。耗時 ${((performance.now()-began)/1000).toFixed(1)} 秒。`
     );
     wtNotice(fallback ? "info" : "success", fallback
       ? `處理完成，${fallback} 張編碼失敗已保留原檔`
@@ -545,7 +540,7 @@ function openCompare(index) {
   lastFocused = document.activeElement;
 
   beforePreview.src = item.previewUrl;
-  afterPreview.src = item.result.previewUrl;
+  afterPreview.src = item.result.previewUrl || item.previewUrl;
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   closeCompare.focus();

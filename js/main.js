@@ -53,6 +53,11 @@ const toolIcons = {
     <path d="M7 15l3-3"/>
   `,
 
+  crop: `
+    <path d="M4 4v12a4 4 0 0 0 4 4h12"/>
+    <path d="M8 4h12v12"/>
+    <path d="M4 9h15"/><path d="M9 4v16"/>
+  `,
   compress: `
     <rect x="3" y="3" width="18" height="18" rx="3"/>
     <path d="M8 8l3 3"/>
@@ -167,6 +172,16 @@ const tools = [
     color: "green",
     ready: true,
     url: "./tools/compress.html"
+  },
+  {
+    id: "crop",
+    name: "圖片裁切",
+    description: "自由裁切、1:1／4:3／16:9、旋轉圖片並下載 PNG。",
+    category: "image",
+    icon: "▧",
+    color: "blue",
+    ready: true,
+    url: "./tools/crop.html"
   },
   {
     id: "pdf",

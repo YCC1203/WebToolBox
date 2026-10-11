@@ -9,6 +9,7 @@ const pages = [
   ['尺寸', '/tools/resize.html', '#fileInput'],
   ['轉檔', '/tools/convert.html', '#fileInput'],
   ['壓縮', '/tools/compress.html', '#fileInput'],
+  ['裁切', '/tools/crop.html', '#fileInput'],
   ['PDF', '/tools/pdf.html', '#fileInput'],
 ];
 
@@ -30,9 +31,9 @@ for (const [name, url, selector] of pages) {
   });
 }
 
-test('首頁顯示八個工具，搜尋及導航正常', async ({ page }) => {
+test('首頁顯示九個工具，搜尋及導航正常', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#toolsGrid .tool-card')).toHaveCount(8);
+  await expect(page.locator('#toolsGrid .tool-card')).toHaveCount(9);
   await page.locator('#searchInput').fill('JSON');
   await expect(page.locator('#toolsGrid .tool-card')).toHaveCount(1);
   await page.locator('#searchInput').fill('');
