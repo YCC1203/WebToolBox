@@ -1,0 +1,54 @@
+name: WebToolbox browser tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright test runner
+        run: npm install --no-save --no-package-lock @playwright/test@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start local static server
+        shell: bash
+        run: |
+          python3 -m http.server 8000 --bind 127.0.0.1 > /tmp/webtoolbox-http.log 2>&1 &
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8000/index.html > /dev/null; then
+              echo 'Local server is ready'
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/webtoolbox-http.log
+          exit 1
+      - name: Run browser smoke tests
+        run: npx playwright test -c tests/playwright.config.cjs
+      - name: Upload test report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
