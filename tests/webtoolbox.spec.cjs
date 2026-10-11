@@ -58,5 +58,5 @@ test('JSON 格式化工具可以處理有效 JSON', async ({ page }) => {
   await page.goto('/tools/json.html');
   await page.locator('#jsonInput').fill('{"hello":1}');
   await page.locator('#formatBtn').click();
-  await expect(page.locator('#jsonOutput')).toContainText('"hello"');
+  await expect(page.locator('#jsonOutput')).toHaveValue(/"hello"\s*:\s*1/);
 });
