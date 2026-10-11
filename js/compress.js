@@ -46,17 +46,6 @@ let busy = false;
 let importing = false;
 let lastFocused = null;
 
-// 共用通知：通知系統未載入時不影響工具原有功能
-function wtNotice(type, text) {
-  window.WebToolboxNotify?.[type]?.(text);
-}
-function wtLoading(text) {
-  return window.WebToolboxNotify?.loading?.(text) ?? null;
-}
-function wtFinish(id) {
-  if (id !== null) window.WebToolboxNotify?.dismiss?.(id);
-}
-
 // ===== 通用工具 =====
 
 function formatBytes(n) {
@@ -183,8 +172,6 @@ async function addFiles(files) {
     }
 
     releaseResults();
-    if (rejected) wtNotice("error", `略過 ${rejected} 張不支援或無法讀取的圖片`);
-    else if (added) wtNotice("success", `已加入 ${added} 張圖片`);
 
     message(
       `已加入 ${added} 張圖片` +
@@ -217,11 +204,46 @@ function canvasToBlob(canvas, type, q) {
 }
 
 // 品質由高往低，最低不低於滑桿設定
-function qualityCandidates(floor) {
-  // 最多測試 5 個高品質值；最低品質永遠不低於使用者設定。
-  const anchors = [0.96, 0.92, 0.88, 0.84];
-  const candidates = [...new Set([...anchors.filter(q => q >= floor), floor])];
-  return candidates.sort((a, b) => b - a);
+// 使用「最低可接受品質 → 較高品質」的有限次數搜尋。
+// 若最低品質都不能達到節省門檻，就不用再浪費時間試更高品質。
+// 瀏覽器實際編碼結果未必完全單調，最後仍以檔案大小做嚴格檢查。
+async function chooseLossyEncoding(canvas, type, floor, maxBytes) {
+  const lower = Math.max(0.5, Math.min(1, floor));
+  const upper = Math.max(lower, 0.98);
+  let encoded = 0;
+  let best = null;
+  let bestQuality = null;
+  async function tryQuality(q) {
+    const blob = await canvasToBlob(canvas, type, q);
+    encoded++;
+    if (blob.size < maxBytes && blob.size <= maxBytes) {
+      best = blob;
+      bestQuality = q;
+      return true;
+    }
+    return false;
+  }
+
+  // 每張圖片首次只編碼一次，先排除本來就難以再壓小的檔案。
+  if (!(await tryQuality(lower))) {
+    return { blob: null, quality: null, attempts: encoded };
+  }
+  if (upper - lower < 0.004) {
+    return { blob: best, quality: bestQuality, attempts: encoded };
+  }
+  if (await tryQuality(upper)) {
+    return { blob: best, quality: bestQuality, attempts: encoded };
+  }
+
+  // 最多三次編碼：最低品質、高品質及一次折半補試。
+  let low = lower;
+  let high = upper;
+  for (let i = 0; i < 1 && high - low > 0.012; i++) {
+    const mid = Math.round(((low + high) / 2) * 1000) / 1000;
+    if (await tryQuality(mid)) low = mid;
+    else high = mid;
+  }
+  return { blob: best, quality: bestQuality, attempts: encoded };
 }
 
 // ===== 壓縮單張圖片 =====
@@ -275,27 +297,16 @@ async function compressImage(item, index) {
         canvas, "image/png"
       );
 
-      if (blob.size <= maxAcceptableSize) {
+      if (blob.size < item.file.size && blob.size <= maxAcceptableSize) {
         best = blob;
       }
 
     } else {
-      const candidates = qualityCandidates(minimumQuality);
-
-      // 由高品質往低品質測試，優先選最保守的設定
-      for (const q of candidates) {
-        const blob = await canvasToBlob(
-          canvas, requestedType, q
-        );
-
-        if (blob.size <= maxAcceptableSize) {
-          best = blob;
-          acceptedQuality = q;
-          break;
-        }
-
-        await pause();
-      }
+      const result = await chooseLossyEncoding(
+        canvas, requestedType, minimumQuality, maxAcceptableSize
+      );
+      best = result.blob;
+      acceptedQuality = result.quality;
     }
 
   } finally {
@@ -457,9 +468,6 @@ async function compressAll() {
 
   let success = 0;
   let failed = 0;
-  let fallback = 0;
-  const began = performance.now();
-  const toastId = wtLoading(`正在壓縮 ${images.length} 張圖片...`);
 
   try {
     for (let i = 0; i < images.length; i++) {
@@ -473,7 +481,6 @@ async function compressAll() {
         success++;
       } catch (error) {
         console.error("重新編碼失敗，保留原始圖片：", error);
-        fallback++;
 
         item.result = {
             blob: item.file,
@@ -517,16 +524,8 @@ async function compressAll() {
       `完成：成功 ${success} 張，失敗 ${failed} 張。` +
       `沒有節省空間的圖片會保留原檔。耗時 ${((performance.now()-began)/1000).toFixed(1)} 秒。`
     );
-    wtNotice(fallback ? "info" : "success", fallback
-      ? `處理完成，${fallback} 張編碼失敗已保留原檔`
-      : `圖片處理完成，共 ${success} 張`);
 
-  } catch (error) {
-    console.error(error);
-    message("圖片壓縮過程發生錯誤");
-    wtNotice("error", "圖片壓縮失敗");
   } finally {
-    wtFinish(toastId);
     setBusy(false);
   }
 }
@@ -588,12 +587,10 @@ async function downloadZip() {
 
   if (typeof JSZip === "undefined") {
     message("ZIP 函式庫載入失敗，請確認網路連線。");
-    wtNotice("error", "ZIP 函式庫載入失敗");
     return;
   }
 
   setBusy(true);
-  const toastId = wtLoading("正在建立圖片 ZIP...");
 
   try {
     message("正在建立 ZIP 檔案...");
@@ -615,14 +612,11 @@ async function downloadZip() {
 
     downloadBlob(blob, "WebToolbox-Compressed-Images.zip");
     message(`ZIP 已建立，包含 ${completed.length} 張圖片。`);
-    wtNotice("success", `包含 ${completed.length} 張圖片的 ZIP 已開始下載`);
 
   } catch (error) {
     console.error(error);
     message("ZIP 建立失敗，請改為個別下載。");
-    wtNotice("error", "ZIP 建立失敗，請改為個別下載");
   } finally {
-    wtFinish(toastId);
     setBusy(false);
   }
 }
