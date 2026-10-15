@@ -203,62 +203,99 @@ function canvasToBlob(canvas, type, q) {
   });
 }
 
-// 最多三次品質試算，最低不低於滑桿設定。
-// 已有較大檔案先試 98% 以減少重複編碼；已壓縮的小檔先試最低品質，
-// 不符合節省門檻便直接保留原檔。每次皆以實際檔案大小驗證。
+// 先試高品質或最低品質；上下界確認後以有限次二分探測，
+// 在大小限制內選擇已試過的最高品質。不低於使用者的品質下限。
+// 高品質輸出已符合大小限制時維持 v3 的單次編碼快速路徑。
 async function chooseLossyEncoding(canvas, type, floor, maxBytes, sourceBytes) {
-  const lower = Math.max(0.5, Math.min(1, floor));
-  const upper = Math.max(lower, 0.98);
-  let encoded = 0;
+  const lower = Math.max(0.5, Math.min(0.98, floor));
+  const upper = 0.98;
   let best = null;
   let bestQuality = null;
 
   async function tryQuality(q) {
     const blob = await canvasToBlob(canvas, type, q);
-    encoded++;
-    // maxBytes 是原始大小扣除最低節省比例後的嚴格上限。
     if (blob.size < maxBytes) {
-      best = blob;
-      bestQuality = q;
+      if (bestQuality === null || q > bestQuality) {
+        best = blob;
+        bestQuality = q;
+      }
       return true;
     }
     return false;
   }
 
-  // A large source in relation to its pixels is frequently a high-quality
-  // JPEG/WebP or a PNG being converted to WebP.  Such images can often be
-  // saved directly at 98% quality.  Try that first to avoid a redundant low-
-  // quality encode.  For already-small inputs, start at the quality floor:
-  // if it cannot shrink, no second encode is needed.
-  // This changes only probe order, not the candidate quality levels or the
-  // three-encode upper bound of the existing algorithm.
-  const bytesPerPixel = sourceBytes / (canvas.width * canvas.height);
-  const preferHighFirst = bytesPerPixel >= (type === "image/jpeg" ? 0.8 : 0.5);
-
   if (upper - lower < 0.004) {
     await tryQuality(lower);
-    return { blob: best, quality: bestQuality, attempts: encoded };
+    return { blob: best, quality: bestQuality };
   }
 
+  const pixels = canvas.width * canvas.height;
+  const preferHighFirst = sourceBytes / pixels >= (type === "image/jpeg" ? 0.8 : 0.5);
+
+  // 先判斷上下界。不達門檻時保留原檔，不繼續犧牲畫質。
   if (preferHighFirst) {
-    if (await tryQuality(upper)) {
-      return { blob: best, quality: bestQuality, attempts: encoded };
-    }
-    if (!(await tryQuality(lower))) {
-      return { blob: null, quality: null, attempts: encoded };
-    }
+    if (await tryQuality(upper)) return { blob: best, quality: bestQuality };
+    if (!(await tryQuality(lower))) return { blob: null, quality: null };
   } else {
-    if (!(await tryQuality(lower))) {
-      return { blob: null, quality: null, attempts: encoded };
-    }
-    if (await tryQuality(upper)) {
-      return { blob: best, quality: bestQuality, attempts: encoded };
-    }
+    if (!(await tryQuality(lower))) return { blob: null, quality: null };
+    if (await tryQuality(upper)) return { blob: best, quality: bestQuality };
   }
 
-  const middle = Math.round(((lower + upper) / 2) * 1000) / 1000;
-  if (upper - lower > 0.012) await tryQuality(middle);
-  return { blob: best, quality: bestQuality, attempts: encoded };
+  // 僅在兩端之間存在可行空間時額外試算最多兩次。
+  // 相較 v3 中點法，有機會在相同檔案大小限制下保存更高畫質。
+  let lo = lower;
+  let hi = upper;
+  for (let attempt = 0; attempt < 2 && hi - lo >= 0.012; attempt++) {
+    const middle = Math.round(((lo + hi) / 2) * 1000) / 1000;
+    if (middle <= lo || middle >= hi) break;
+    if (await tryQuality(middle)) lo = middle;
+    else hi = middle;
+  }
+  return { blob: best, quality: bestQuality };
+}
+
+// PNG -> 有損 WebP 時檢查縮圖色彩差異：避免細字、銳利線條或
+// 漸層在縮小檔案時出現明顯失真。這是保守的抽樣檢查，非無損保證。
+// 同時用白/黑背景比較，兼顧 PNG 的半透明區域。
+async function isVisuallyAcceptable(sourceCanvas, encodedBlob) {
+  const scale = Math.min(1, 448 / sourceCanvas.width, 448 / sourceCanvas.height);
+  const width = Math.max(1, Math.round(sourceCanvas.width * scale));
+  const height = Math.max(1, Math.round(sourceCanvas.height * scale));
+  const sample = document.createElement("canvas");
+  sample.width = width;
+  sample.height = height;
+  let decoded = null;
+  try {
+    const ctx = sample.getContext("2d", { willReadFrequently: true });
+    if (!ctx) throw new Error("無法執行畫質檢查");
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(sourceCanvas, 0, 0, width, height);
+    const original = ctx.getImageData(0, 0, width, height).data;
+    decoded = await createImageBitmap(encodedBlob);
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(decoded, 0, 0, width, height);
+    const candidate = ctx.getImageData(0, 0, width, height).data;
+
+    let squaredError = 0;
+    for (let i = 0; i < original.length; i += 4) {
+      const a = original[i + 3] / 255;
+      const b = candidate[i + 3] / 255;
+      for (let channel = 0; channel < 3; channel++) {
+        const org = original[i + channel] * a;
+        const out = candidate[i + channel] * b;
+        const black = org - out;
+        const white = black + (b - a) * 255;
+        squaredError += black * black + white * white;
+      }
+    }
+    const mse = squaredError / (width * height * 6);
+    // PSNR ≧ 38 dB 才接受有損 PNG -> WebP；不足就保留 PNG。
+    return mse <= (255 * 255) / Math.pow(10, 38 / 10);
+  } finally {
+    if (decoded) decoded.close();
+    sample.width = 0;
+    sample.height = 0;
+  }
 }
 // ===== 壓縮單張圖片 =====
 
@@ -285,6 +322,7 @@ async function compressImage(item, index) {
   let image = null;
   let best = null;
   let acceptedQuality = null;
+  let rejectedForFidelity = false;
 
   try {
     // 瀏覽器解碼圖片，保留自然顯示方向
@@ -321,6 +359,14 @@ async function compressImage(item, index) {
       );
       best = result.blob;
       acceptedQuality = result.quality;
+      // 原 PNG 嘗試 WebP 有損輸出時，若畫面差異過大，直接保留原始 PNG。
+      if (item.file.type === "image/png" && requestedType === "image/webp" && best) {
+        if (!(await isVisuallyAcceptable(canvas, best))) {
+          best = null;
+          acceptedQuality = null;
+          rejectedForFidelity = true;
+        }
+      }
     }
 
   } finally {
@@ -345,6 +391,7 @@ async function compressImage(item, index) {
     type,
     filename,
     retainedOriginal,
+    rejectedForFidelity,
     quality: acceptedQuality,
     width: item.width,
     height: item.height,
@@ -419,8 +466,9 @@ function renderList() {
 
       if (result.retainedOriginal) {
         note.classList.add("unchanged");
-        note.textContent =
-          "未達節省門檻，已保留原始檔案";
+        note.textContent = result.rejectedForFidelity
+          ? "圖片差異過大，為避免失真已保留原始檔案"
+          : "未達節省門檻，已保留原始檔案";
       } else {
         note.textContent =
           `減少 ${percent.toFixed(1)}%` +
