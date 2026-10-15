@@ -118,3 +118,20 @@ test('圖片拼接：拖曳重新排序與移除圖片', async ({ page }) => {
   await page.getByRole('button', { name: '移除第 3 張圖片' }).click();
   await expect(page.locator('#imageList > li')).toHaveCount(2);
 });
+
+test('圖片拼接：讀取尚未完成時清空，不會讓過期圖片重新出現', async ({ page }) => {
+  await page.goto('/tools/stitch.html');
+  await page.evaluate(() => {
+    const decode = window.createImageBitmap.bind(window);
+    window.createImageBitmap = async (...args) => {
+      await new Promise(resolve => setTimeout(resolve, 400));
+      return decode(...args);
+    };
+  });
+  await page.locator('#fileInput').setInputFiles(fixture);
+  await expect(page.locator('#fileCount')).toContainText('正在讀取');
+  await page.locator('#clearAll').click();
+  await page.waitForTimeout(650);
+  await expect(page.locator('#imageList > li')).toHaveCount(0);
+  await expect(page.locator('#downloadBtn')).toBeDisabled();
+});

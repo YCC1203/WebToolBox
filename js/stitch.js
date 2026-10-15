@@ -158,6 +158,7 @@
           if (generation !== loadGeneration) { bitmap.close(); break; }
           if (totalPixels() + bitmap.width * bitmap.height > MAX_TOTAL_PIXELS) {
             bitmap.close();
+            bitmap = null;
             errors.push("圖片總像素超過限制，請先移除部分圖片。");
             continue;
           }
@@ -389,6 +390,11 @@
       renderList(); updateButtons();
     }
   });
-  window.addEventListener("pagehide", () => { items.splice(0).forEach(dispose); });
+  // 離開頁面時取消尚在解碼的工作，避免非同步解碼完成後留下 Bitmap。
+  window.addEventListener("pagehide", () => {
+    loadGeneration++;
+    if (frame) cancelAnimationFrame(frame);
+    items.splice(0).forEach(dispose);
+  });
   renderList(); schedulePreview();
 })();
