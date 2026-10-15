@@ -203,20 +203,21 @@ function canvasToBlob(canvas, type, q) {
   });
 }
 
-// 品質由高往低，最低不低於滑桿設定
-// 使用「最低可接受品質 → 較高品質」的有限次數搜尋。
-// 若最低品質都不能達到節省門檻，就不用再浪費時間試更高品質。
-// 瀏覽器實際編碼結果未必完全單調，最後仍以檔案大小做嚴格檢查。
-async function chooseLossyEncoding(canvas, type, floor, maxBytes) {
+// 最多三次品質試算，最低不低於滑桿設定。
+// 已有較大檔案先試 98% 以減少重複編碼；已壓縮的小檔先試最低品質，
+// 不符合節省門檻便直接保留原檔。每次皆以實際檔案大小驗證。
+async function chooseLossyEncoding(canvas, type, floor, maxBytes, sourceBytes) {
   const lower = Math.max(0.5, Math.min(1, floor));
   const upper = Math.max(lower, 0.98);
   let encoded = 0;
   let best = null;
   let bestQuality = null;
+
   async function tryQuality(q) {
     const blob = await canvasToBlob(canvas, type, q);
     encoded++;
-    if (blob.size < maxBytes && blob.size <= maxBytes) {
+    // maxBytes 是原始大小扣除最低節省比例後的嚴格上限。
+    if (blob.size < maxBytes) {
       best = blob;
       bestQuality = q;
       return true;
@@ -224,28 +225,41 @@ async function chooseLossyEncoding(canvas, type, floor, maxBytes) {
     return false;
   }
 
-  // 每張圖片首次只編碼一次，先排除本來就難以再壓小的檔案。
-  if (!(await tryQuality(lower))) {
-    return { blob: null, quality: null, attempts: encoded };
-  }
+  // A large source in relation to its pixels is frequently a high-quality
+  // JPEG/WebP or a PNG being converted to WebP.  Such images can often be
+  // saved directly at 98% quality.  Try that first to avoid a redundant low-
+  // quality encode.  For already-small inputs, start at the quality floor:
+  // if it cannot shrink, no second encode is needed.
+  // This changes only probe order, not the candidate quality levels or the
+  // three-encode upper bound of the existing algorithm.
+  const bytesPerPixel = sourceBytes / (canvas.width * canvas.height);
+  const preferHighFirst = bytesPerPixel >= (type === "image/jpeg" ? 0.8 : 0.5);
+
   if (upper - lower < 0.004) {
-    return { blob: best, quality: bestQuality, attempts: encoded };
-  }
-  if (await tryQuality(upper)) {
+    await tryQuality(lower);
     return { blob: best, quality: bestQuality, attempts: encoded };
   }
 
-  // 最多三次編碼：最低品質、高品質及一次折半補試。
-  let low = lower;
-  let high = upper;
-  for (let i = 0; i < 1 && high - low > 0.012; i++) {
-    const mid = Math.round(((low + high) / 2) * 1000) / 1000;
-    if (await tryQuality(mid)) low = mid;
-    else high = mid;
+  if (preferHighFirst) {
+    if (await tryQuality(upper)) {
+      return { blob: best, quality: bestQuality, attempts: encoded };
+    }
+    if (!(await tryQuality(lower))) {
+      return { blob: null, quality: null, attempts: encoded };
+    }
+  } else {
+    if (!(await tryQuality(lower))) {
+      return { blob: null, quality: null, attempts: encoded };
+    }
+    if (await tryQuality(upper)) {
+      return { blob: best, quality: bestQuality, attempts: encoded };
+    }
   }
+
+  const middle = Math.round(((lower + upper) / 2) * 1000) / 1000;
+  if (upper - lower > 0.012) await tryQuality(middle);
   return { blob: best, quality: bestQuality, attempts: encoded };
 }
-
 // ===== 壓縮單張圖片 =====
 
 async function compressImage(item, index) {
@@ -303,7 +317,7 @@ async function compressImage(item, index) {
 
     } else {
       const result = await chooseLossyEncoding(
-        canvas, requestedType, minimumQuality, maxAcceptableSize
+        canvas, requestedType, minimumQuality, maxAcceptableSize, item.file.size
       );
       best = result.blob;
       acceptedQuality = result.quality;
