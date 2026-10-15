@@ -106,17 +106,18 @@ function getFileName(item, index) {
 
 // ===== 圖片讀取 =====
 
-function loadImage(url) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(
-      new Error("無法解碼此圖片")
-    );
-
-    image.src = url;
-  });
+// ImageBitmap 可在使用結束後立即 close()，不必等待瀏覽器回收 <img> 解碼快取。
+// 和尺寸調整工具一致，以圖片中的 EXIF 方向為準。
+async function decodeBitmap(file) {
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    validateDimensions(bitmap.width, bitmap.height);
+    return bitmap;
+  } catch (error) {
+    bitmap?.close();
+    throw error;
+  }
 }
 
 function validateDimensions(width, height) {
@@ -160,28 +161,24 @@ async function addFiles(files) {
       continue;
     }
 
-    const url = URL.createObjectURL(file);
-
+    // 先檢查尺寸再建立預覽 URL；不支援的檔案不會留下 Blob URL。
     try {
-      const image = await loadImage(url);
+      const bitmap = await decodeBitmap(file);
+      const { width, height } = bitmap;
+      bitmap.close();
 
-      validateDimensions(
-        image.naturalWidth,
-        image.naturalHeight
-      );
-
+      const url = URL.createObjectURL(file);
       images.push({
         file,
         url,
-        width: image.naturalWidth,
-        height: image.naturalHeight,
+        width,
+        height,
         result: null,
         error: null
       });
 
       added++;
     } catch {
-      URL.revokeObjectURL(url);
       rejected++;
     }
   }
@@ -357,17 +354,15 @@ function canvasToBlob(canvas, type, outputQuality) {
 // ===== 轉換單張圖片 =====
 
 async function convertImage(item, index) {
-  const image = await loadImage(item.url);
-  const width = image.naturalWidth;
-  const height = image.naturalHeight;
-
-  validateDimensions(width, height);
-
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-
+  let bitmap = null;
+  let canvas = null;
   try {
+    bitmap = await decodeBitmap(item.file);
+    const width = bitmap.width;
+    const height = bitmap.height;
+    canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
@@ -383,7 +378,7 @@ async function convertImage(item, index) {
   }
 
   // 保留解析度，繪製原始圖片
-  ctx.drawImage(image, 0, 0, width, height);
+  ctx.drawImage(bitmap, 0, 0, width, height);
 
   const blob = await canvasToBlob(
     canvas,
@@ -400,8 +395,11 @@ async function convertImage(item, index) {
     filename: getFileName(item, index)
   };
   } finally {
-    canvas.width = 0;
-    canvas.height = 0;
+    bitmap?.close();
+    if (canvas) {
+      canvas.width = 0;
+      canvas.height = 0;
+    }
   }
 }
 

@@ -75,27 +75,16 @@ function makeButton(text, callback, disabled = false) {
   return button;
 }
 
-function getDimensions(file) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-
-    img.onload = () => {
-      const result = {
-        width: img.naturalWidth,
-        height: img.naturalHeight
-      };
-      URL.revokeObjectURL(url);
-      resolve(result);
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("無法讀取圖片"));
-    };
-
-    img.src = url;
-  });
+async function getDimensions(file) {
+  // 讀取尺寸時只保留寬高資訊，不保留解碼後的完整像素資料。
+  // 用相同的 EXIF 方向設定，確保匯入與處理時計算的尺寸一致。
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    return { width: bitmap.width, height: bitmap.height };
+  } finally {
+    bitmap?.close();
+  }
 }
 
 function updateCount() {
@@ -536,8 +525,12 @@ async function downloadZip() {
   }
 
   busy = true;
+  fileInput.disabled = true;
+  clearAll.disabled = true;
   downloadAll.disabled = true;
   processBtn.disabled = true;
+  const settingControls = [targetWidth, targetHeight, outputFormat, quality, lockRatio, noUpscale];
+  settingControls.forEach(control => control.disabled = true);
 
   const toastId = wtLoading("正在建立圖片 ZIP...");
   try {
@@ -569,6 +562,9 @@ async function downloadZip() {
   } finally {
     wtFinish(toastId);
     busy = false;
+    fileInput.disabled = false;
+    clearAll.disabled = false;
+    settingControls.forEach(control => control.disabled = false);
     renderList();
   }
 }
