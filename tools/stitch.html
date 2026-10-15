@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d1a">
+  <title>圖片拼接工具｜直向橫向合併、網格排版與圖片下載｜WebToolbox</title>
+  <meta name="description" content="免費線上圖片拼接工具，支援 JPG、PNG、WebP 多圖上傳、拖曳排序、直向或橫向合併、網格排版、間距、背景顏色、自訂輸出寬度、即時預覽及 PNG、JPG、WebP 下載。圖片在瀏覽器內處理。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ycc1203.github.io/WebToolBox/tools/stitch.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="圖片拼接工具｜WebToolbox">
+  <meta property="og:description" content="多張圖片一鍵直向、橫向或網格拼接，支援排序、間距與 PNG／JPG／WebP 下載。">
+  <meta property="og:url" content="https://ycc1203.github.io/WebToolBox/tools/stitch.html">
+  <meta property="og:site_name" content="WebToolbox">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/stitch.css">
+  <script src="../js/notify.js" defer></script>
+  <script src="../js/stitch.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span>Web<span class="accent">Toolbox</span></span></a>
+    <nav class="nav-links" aria-label="主選單"><a href="../index.html">首頁</a><a href="../index.html#tools">所有工具</a></nav>
+    <a href="../index.html#tools" class="nav-button">返回工具箱 ↗</a>
+  </header>
+  <main class="stitch-page">
+    <a href="../index.html#tools" class="stitch-back">← 返回所有工具</a>
+    <div class="stitch-heading"><span class="eyebrow">IMAGE / STITCH</span><h1>圖片<span class="gradient-text">拼接工具</span></h1><p>多張圖片合成一張，支援長圖、橫向對比與網格排版。所有檔案皆在瀏覽器內處理，不會上傳。</p></div>
+    <section class="stitch-panel" aria-labelledby="uploadTitle">
+      <div class="stitch-panel-head"><h2 id="uploadTitle">01　選擇圖片與排列順序</h2><button id="clearAll" type="button" class="stitch-secondary" disabled>清空全部</button></div>
+      <div id="dropZone" class="stitch-dropzone" role="button" tabindex="0" aria-label="點擊或拖曳上傳圖片">
+        <span class="stitch-upload-icon" aria-hidden="true">⇧</span><strong>點擊選擇或拖曳圖片至此</strong><small>JPG / PNG / WebP · 最多 20 張 · 每張不超過 20 MB</small>
+      </div>
+      <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden aria-label="選擇圖片檔案">
+      <div class="stitch-list-head"><p id="fileCount" aria-live="polite">尚未選擇圖片</p><small>可拖曳圖片卡片排序；手機也可使用 ↑ ↓ 按鈕</small></div>
+      <ul id="imageList" class="stitch-image-list" aria-label="待拼接圖片清單"></ul>
+    </section>
+    <section class="stitch-panel" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle">02　拼接與輸出設定</h2>
+      <div class="stitch-settings">
+        <label class="stitch-field">排列方式<select id="layoutMode"><option value="vertical">直向拼接（長圖）</option><option value="horizontal">橫向拼接</option><option value="grid">網格排版</option></select></label>
+        <label class="stitch-field">輸出寬度（px）<input id="outputWidth" type="number" min="200" max="6000" step="1" value="1200" inputmode="numeric"></label>
+        <label class="stitch-field">圖片間距（px）<input id="gap" type="number" min="0" max="120" step="1" value="12" inputmode="numeric"></label>
+        <label class="stitch-field">外圍留白（px）<input id="padding" type="number" min="0" max="120" step="1" value="12" inputmode="numeric"></label>
+        <label class="stitch-field">背景顏色<input id="backgroundColor" type="color" value="#ffffff"></label>
+        <label class="stitch-field stitch-grid-only" id="columnsField" hidden>網格欄數<select id="columns"><option value="2" selected>2 欄</option><option value="3">3 欄</option><option value="4">4 欄</option><option value="5">5 欄</option></select></label>
+        <label class="stitch-field stitch-grid-only" id="cellRatioField" hidden>網格格子比例<select id="cellRatio"><option value="1">1:1（正方形）</option><option value="1.3333333333333" selected>4:3</option><option value="1.7777777777778">16:9</option><option value="0.75">3:4</option></select></label>
+        <label class="stitch-field stitch-grid-only" id="fitField" hidden>網格圖片顯示<select id="fitMode"><option value="contain">完整顯示（不裁切）</option><option value="cover">填滿格子（可能裁切）</option></select></label>
+        <label class="stitch-field">下載格式<select id="outputFormat"><option value="image/png">PNG（無損）</option><option value="image/jpeg">JPG（檔案通常較小）</option><option value="image/webp">WebP</option></select></label>
+        <label class="stitch-field" id="qualityField" hidden>輸出品質：<output id="qualityValue" for="quality">90%</output><input id="quality" type="range" min="50" max="100" value="90"></label>
+      </div>
+      <p class="stitch-note">直向及橫向拼接會保留每張圖片的比例；網格模式可選擇完整顯示或裁切填滿。輸出最長邊不得超過 16,384 px、總像素不得超過 4,000 萬。</p>
+    </section>
+    <section class="stitch-panel" aria-labelledby="previewTitle">
+      <div class="stitch-panel-head"><h2 id="previewTitle">03　即時預覽與下載</h2><span id="outputInfo" class="stitch-output-info">尚無輸出尺寸</span></div>
+      <div class="stitch-preview"><canvas id="previewCanvas" role="img" aria-label="圖片拼接即時預覽" hidden></canvas><p id="previewEmpty">請先選擇圖片，預覽將在這裡顯示</p></div>
+      <p id="stitchStatus" role="status" aria-live="polite">請先上傳圖片。</p>
+      <button id="downloadBtn" type="button" class="stitch-download" disabled>↓ 下載拼接圖片</button>
+      <p class="stitch-note">圖片輸出不會保留 EXIF 資料或動態影格；JPG 不支援透明背景。大型圖片輸出可能需要數秒。</p>
+    </section>
+  </main>
+  <footer class="footer"><a href="../index.html" class="footer-brand">✦ WebToolbox</a><p>Made for simplicity and productivity.</p><span>© <span id="year"></span> WebToolbox</span></footer>
+</body>
+</html>

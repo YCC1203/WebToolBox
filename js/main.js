@@ -76,6 +76,11 @@ const toolIcons = {
     <circle cx="16.5" cy="8.5" r="1.5"/>
     <path d="M7 19h10"/>
   `,
+  stitch: `
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <path d="M3 11h18M11 3v18"/>
+    <path d="M6 6h2v2H6zM14 14h4v4h-4z"/>
+  `,
   pdf: `
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
     <path d="M14 2v6h6"/>
@@ -198,6 +203,16 @@ const tools = [
     color: "purple",
     ready: true,
     url: "./tools/watermark.html"
+  },
+  {
+    id: "stitch",
+    name: "圖片拼接",
+    description: "多張圖片直向、橫向或網格拼接，支援排序、間距與 PNG／JPG／WebP 下載。",
+    category: "image",
+    icon: "▦",
+    color: "blue",
+    ready: true,
+    url: "./tools/stitch.html"
   },
   {
     id: "pdf",

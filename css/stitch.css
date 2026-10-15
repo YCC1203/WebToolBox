@@ -1,0 +1,52 @@
+.stitch-page{max-width:1060px;margin:0 auto;padding:34px 22px 94px;min-width:0}
+.stitch-back{display:inline-block;font-size:13px;color:#acb9d6;margin:0 0 26px}
+.stitch-back:hover{color:#e2dbff}
+.stitch-heading{text-align:center;margin:0 0 38px}
+.stitch-heading h1{font-size:clamp(30px,4.2vw,45px);margin:9px 0 12px;letter-spacing:-1px}
+.stitch-heading p{color:#aab8d0;font-size:14px;max-width:680px;margin:0 auto}
+.stitch-panel{border:1px solid #303955;background:linear-gradient(150deg,#151d33,#11182b);border-radius:19px;margin-bottom:22px;padding:26px;min-width:0}
+.stitch-panel h2{font-size:18px;margin:0 0 18px;letter-spacing:.1px}
+.stitch-panel-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:18px}
+.stitch-panel-head h2{margin:0}
+.stitch-secondary{padding:9px 16px;background:#222c45;border:1px solid #4a5777;border-radius:10px;color:#d8e1f4;font-size:13px}
+.stitch-secondary:not(:disabled):hover{background:#303e5d}
+.stitch-secondary:disabled,.stitch-download:disabled{opacity:.48;cursor:not-allowed}
+.stitch-dropzone{border:2px dashed #59668b;border-radius:16px;background:#121b30;min-height:167px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;text-align:center;padding:24px;cursor:pointer;transition:.2s}
+.stitch-dropzone:hover,.stitch-dropzone.dragover{border-color:#aa91ff;background:#242342}
+.stitch-dropzone:focus-visible{outline:3px solid #66cdeb;outline-offset:3px}
+.stitch-upload-icon{font-size:32px;line-height:1.1;color:#af9fff}
+.stitch-dropzone strong{font-size:15px}
+.stitch-dropzone small{font-size:12px;color:#a7b5ce}
+.stitch-list-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:18px 0 10px}
+.stitch-list-head p{margin:0;font-size:13px;color:#d0d9ef}
+.stitch-list-head small{color:#91a3c4;font-size:11px}
+.stitch-image-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.stitch-image-list li{display:flex;align-items:center;gap:12px;border:1px solid #343f5f;background:#10192e;border-radius:12px;padding:10px;min-width:0}
+.stitch-image-list li.dragging{opacity:.42}
+.stitch-image-list li.drop-before{border-top:3px solid #a38dff}
+.stitch-image-list li.drop-after{border-bottom:3px solid #a38dff}
+.stitch-thumb{width:65px;height:56px;object-fit:contain;background:#222b40;border-radius:8px;flex-shrink:0}
+.stitch-file-details{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.stitch-file-details strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:#ebefff}
+.stitch-file-details small{font-size:11px;color:#a9b6cf}
+.stitch-file-actions{display:flex;gap:5px;flex-shrink:0}
+.stitch-file-actions button{width:32px;height:34px;border:1px solid #485473;border-radius:8px;background:#222e48;color:#edf0fc;display:grid;place-items:center;font-size:15px}
+.stitch-file-actions button:hover:not(:disabled){background:#393b6b}
+.stitch-file-actions button:disabled{opacity:.35;cursor:not-allowed}
+.stitch-file-actions .remove{color:#ffb3bc}
+.stitch-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.stitch-field{display:flex;flex-direction:column;gap:7px;color:#cad6ed;font-size:13px;min-width:0}
+.stitch-field input:not([type="color"]):not([type="range"]),.stitch-field select{width:100%;min-height:43px;color:#f0f4ff;background:#0d1527;border:1px solid #495474;border-radius:9px;padding:8px 11px;font-size:14px}
+.stitch-field input[type="color"]{width:100%;height:43px;border:1px solid #495474;border-radius:9px;background:#0d1527;padding:5px;cursor:pointer}
+.stitch-field input[type="range"]{accent-color:#a395ff;min-height:30px}
+.stitch-note{font-size:12px;line-height:1.8;color:#a4b3cd;margin:16px 0 0}
+.stitch-output-info{font-size:12px;color:#c7b8ff;overflow-wrap:anywhere}
+.stitch-preview{min-height:230px;max-height:680px;display:flex;align-items:center;justify-content:center;overflow:auto;background:repeating-conic-gradient(#202a3c 0% 25%,#172137 0% 50%) 50% / 22px 22px;border:1px solid #3a4561;border-radius:14px;padding:18px}
+.stitch-preview canvas{display:block;max-width:100%;max-height:620px;width:auto;height:auto;object-fit:contain;box-shadow:0 8px 38px #0006}
+.stitch-preview [hidden],.stitch-field[hidden]{display:none!important}
+.stitch-preview p{margin:0;text-align:center;color:#9fb0ce;font-size:13px}
+#stitchStatus{font-size:13px;color:#bbc8e2;margin:17px 0}
+.stitch-download{width:100%;min-height:49px;border:0;border-radius:12px;background:linear-gradient(105deg,#715bf2,#9c69e8);color:#fff;font-weight:700;font-size:15px}
+.stitch-download:hover:not(:disabled){filter:brightness(1.1)}
+@media (max-width:640px){.stitch-page{padding:27px 15px 65px}.stitch-panel{padding:17px 14px;border-radius:15px}.stitch-heading{margin-bottom:28px}.stitch-settings{grid-template-columns:minmax(0,1fr)}.stitch-panel h2{font-size:16px}.stitch-thumb{width:51px;height:48px}.stitch-image-list li{gap:7px;padding:8px}.stitch-file-actions{gap:3px}.stitch-file-actions button{width:29px;height:34px}.stitch-preview{min-height:190px;padding:8px}.stitch-list-head{align-items:flex-start}}
+@media (prefers-reduced-motion:reduce){.stitch-dropzone{transition:none}}
