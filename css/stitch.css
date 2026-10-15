@@ -50,3 +50,24 @@
 .stitch-download:hover:not(:disabled){filter:brightness(1.1)}
 @media (max-width:640px){.stitch-page{padding:27px 15px 65px}.stitch-panel{padding:17px 14px;border-radius:15px}.stitch-heading{margin-bottom:28px}.stitch-settings{grid-template-columns:minmax(0,1fr)}.stitch-panel h2{font-size:16px}.stitch-thumb{width:51px;height:48px}.stitch-image-list li{gap:7px;padding:8px}.stitch-file-actions{gap:3px}.stitch-file-actions button{width:29px;height:34px}.stitch-preview{min-height:190px;padding:8px}.stitch-list-head{align-items:flex-start}}
 @media (prefers-reduced-motion:reduce){.stitch-dropzone{transition:none}}
+
+/* Quality v6: mobile reordering controls are large enough for touch. */
+@media (max-width: 640px) {
+  .stitch-image-list li {
+    flex-wrap: wrap;
+  }
+  .stitch-file-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .stitch-file-actions button {
+    width: 44px;
+    height: 44px;
+    touch-action: manipulation;
+  }
+}
+.stitch-file-actions button:focus-visible {
+  outline: 2px solid #76defa;
+  outline-offset: 2px;
+}

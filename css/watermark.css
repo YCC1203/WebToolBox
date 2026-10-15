@@ -31,3 +31,23 @@
 .watermark-download:disabled {opacity:.45;cursor:not-allowed}
 .watermark-panel [hidden] {display:none !important}
 @media(max-width:670px){.watermark-page{padding:28px 16px 60px}.watermark-panel{padding:18px}.watermark-settings-grid{grid-template-columns:1fr;gap:0}.watermark-mode{gap:12px}.watermark-preview{min-height:180px}.watermark-download{width:100%}}
+
+/* Quality v6: clearer nine-position touch and keyboard targets. */
+.watermark-positions button {
+  min-height: 48px;
+  touch-action: manipulation;
+}
+.watermark-positions button:focus-visible,
+.watermark-upload:focus-visible,
+.watermark-download:focus-visible {
+  outline: 2px solid #76defa;
+  outline-offset: 3px;
+}
+@media (max-width: 670px) {
+  .watermark-mode label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    gap: 5px;
+  }
+}

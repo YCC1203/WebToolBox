@@ -236,3 +236,16 @@
     align-items: flex-start;
   }
 }
+
+/* Quality v6: PDF page action buttons are finger-sized on phones. */
+@media (max-width: 640px) {
+  .pdf-page-controls button {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+.pdf-page-controls button:focus-visible {
+  outline: 2px solid #76defa;
+  outline-offset: 2px;
+}

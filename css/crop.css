@@ -1,1 +1,16 @@
 .crop-page{max-width:1050px;margin:0 auto;padding:38px 24px 80px}.crop-back{color:#a6bbeb;text-decoration:none}.crop-heading{text-align:center;margin:35px 0}.crop-heading h1{font-size:clamp(29px,5vw,44px);margin:12px 0}.crop-heading p{color:var(--muted,#adbad0)}.crop-panel{margin:22px 0;padding:24px;background:#151e32;border:1px solid #354463;border-radius:18px}.crop-panel h2{margin:0 0 18px;font-size:19px}.crop-panel input[type=file]{max-width:100%;padding:12px;border:1px dashed #7887b0;border-radius:12px}.crop-panel p{color:#b8c5db}.crop-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end}.crop-controls label{display:grid;gap:7px;color:#c8d6ec}.crop-controls select,.crop-controls button,.crop-download{border:1px solid #56688a;background:#263552;color:#fff;border-radius:10px;padding:11px 15px;font:inherit;cursor:pointer}.crop-controls button:disabled,.crop-download:disabled{opacity:.45;cursor:not-allowed}.crop-stage{background:#090f1c;border:1px solid #344360;border-radius:12px;padding:12px;overflow:auto;text-align:center}.crop-stage canvas{display:block;max-width:100%;height:auto;margin:auto;touch-action:none;cursor:crosshair}.crop-download{margin-top:15px;background:#6d55ca;border-color:#8a71ed}.crop-hint{font-size:13px}#cropStatus{font-size:13px}@media(max-width:600px){.crop-page{padding:25px 14px 50px}.crop-panel{padding:15px}}
+/* Quality v6: comfortable controls for touch and visible keyboard focus. */
+@media (max-width: 600px) {
+  .crop-controls select,
+  .crop-controls button,
+  .crop-download {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+.crop-controls select:focus-visible,
+.crop-controls button:focus-visible,
+.crop-download:focus-visible {
+  outline: 2px solid #76defa;
+  outline-offset: 2px;
+}
