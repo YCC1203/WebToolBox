@@ -468,6 +468,7 @@ async function compressAll() {
 
   let success = 0;
   let failed = 0;
+  const began = performance.now();
 
   try {
     for (let i = 0; i < images.length; i++) {
