@@ -44,8 +44,8 @@ test('圖片合成：新增文字、復原重做、排序與刪除圖層', async
   await expect(page.locator('#textValue')).toHaveValue('合成文字');
   await page.locator('#redoBtn').click();
   await expect(page.locator('#textValue')).toHaveValue('測試合成文字');
-  await page.locator('#layerList > li').first.getByRole('button', { name: /^下移/ }).click();
-  await page.locator('#layerList > li').first.getByRole('button', { name: /^移除/ }).click();
+  await page.locator('#layerList > li').first().getByRole('button', { name: /^下移/ }).click();
+  await page.locator('#layerList > li').first().getByRole('button', { name: /^移除/ }).click();
   await expect(page.locator('#layerList > li')).toHaveCount(2);
   await page.locator('#undoBtn').click();
   await expect(page.locator('#layerList > li')).toHaveCount(3);
