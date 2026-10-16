@@ -109,3 +109,21 @@ test('圖片合成：拒絕 SVG、限制畫布尺寸、手機頁面無溢出', a
   const widths = await page.evaluate(() => ({ page: document.documentElement.scrollWidth, screen: innerWidth }));
   expect(widths.page).toBeLessThanOrEqual(widths.screen + 2);
 });
+
+test('圖片合成：完全透明的上層不阻擋點選下層', async ({ page }) => {
+  await uploadTwo(page);
+  // 匯入順序為底層、頂層，預設選取最上層。
+  await expect(page.locator('#layerList > li').first()).toHaveClass(/is-selected/);
+  await page.locator('#layerOpacity').fill('0');
+  await page.locator('#layerOpacity').dispatchEvent('change');
+  const canvas = page.locator('#editorCanvas');
+  await canvas.scrollIntoViewIfNeeded();
+  const bounds = await canvas.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  await expect(page.locator('#layerList > li').last()).toHaveClass(/is-selected/);
+  // 透明上層仍然存在，使用者可在圖層清單重新選取並調整。
+  await expect(page.locator('#layerList > li')).toHaveCount(2);
+  await page.locator('#layerList > li').first().getByRole('button', { name: /^選取/ }).click();
+  await expect(page.locator('#layerOpacity')).toHaveValue('0');
+});

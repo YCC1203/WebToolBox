@@ -394,7 +394,8 @@
   function hitTest(x, y) {
     for (let i = layers.length - 1; i >= 0; i--) {
       const layer = layers[i];
-      if (!layer.visible) continue;
+      // 完全透明的圖層仍可從清單編輯，但不攔截底下圖層的畫布點選。
+      if (!layer.visible || layer.opacity <= 0) continue;
       const [w, h] = drawingSize(layer);
       const [lx, ly] = relativeCoords(layer, x, y);
       if (Math.abs(lx) <= w / 2 && Math.abs(ly) <= h / 2) return layer;
@@ -405,7 +406,7 @@
     if (pending || exporting || event.button !== 0) return;
     const [x, y] = logicalCoords(event);
     const current = selected();
-    const resizing = current?.visible && isHandle(current, x, y);
+    const resizing = current?.visible && current.opacity > 0 && isHandle(current, x, y);
     const layer = resizing ? current : hitTest(x, y);
     choose(layer?.id ?? null);
     if (!layer) return;
