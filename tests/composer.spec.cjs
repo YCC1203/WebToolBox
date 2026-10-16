@@ -127,3 +127,55 @@ test('圖片合成：完全透明的上層不阻擋點選下層', async ({ page 
   await page.locator('#layerList > li').first().getByRole('button', { name: /^選取/ }).click();
   await expect(page.locator('#layerOpacity')).toHaveValue('0');
 });
+
+test('圖片合成：鎖定圖層不攔截畫布選取、可解鎖且支援復原重做', async ({ page }) => {
+  await uploadTwo(page);
+  const top = page.locator('#layerList > li').first();
+  await top.getByRole('button', { name: /^鎖定/ }).click();
+  await expect(top.getByRole('button', { name: /^解鎖/ })).toBeVisible();
+  await expect(page.locator('#posX')).toBeDisabled();
+  await expect(top.getByRole('button', { name: /^移除/ })).toBeDisabled();
+
+  // 鎖定最上層時，畫布點擊應選到底下可見的圖層。
+  const canvas = page.locator('#editorCanvas');
+  await canvas.scrollIntoViewIfNeeded();
+  const rect = await canvas.boundingBox();
+  await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  await expect(page.locator('#layerList > li').last()).toHaveClass(/is-selected/);
+  await expect(page.locator('#posX')).toBeEnabled();
+
+  // 解鎖後可以重新選取，復原鎖定狀態也應生效。
+  await top.getByRole('button', { name: /^解鎖/ }).click();
+  await expect(top.getByRole('button', { name: /^鎖定/ })).toBeVisible();
+  await page.locator('#undoBtn').click();
+  await expect(top.getByRole('button', { name: /^解鎖/ })).toBeVisible();
+  await page.locator('#redoBtn').click();
+  await expect(top.getByRole('button', { name: /^鎖定/ })).toBeVisible();
+  await top.getByRole('button', { name: /^選取/ }).click();
+  await expect(page.locator('#posX')).toBeEnabled();
+});
+
+test('圖片合成：置中對齊以原始畫布座標為準且可復原', async ({ page }) => {
+  await page.goto('/tools/composer.html');
+  await page.locator('#addTextBtn').click();
+  await page.locator('#posX').fill('350');
+  await page.locator('#posX').press('Tab');
+  await page.locator('#posY').fill('220');
+  await page.locator('#posY').press('Tab');
+  await page.locator('#alignCenterX').click();
+  await expect(page.locator('#posX')).toHaveValue('600');
+  await expect(page.locator('#posY')).toHaveValue('220');
+  await page.locator('#alignCenterY').click();
+  await expect(page.locator('#posY')).toHaveValue('400');
+  await page.locator('#undoBtn').click();
+  await expect(page.locator('#posY')).toHaveValue('220');
+  await page.locator('#redoBtn').click();
+  await expect(page.locator('#posY')).toHaveValue('400');
+  await page.locator('#posX').fill('350');
+  await page.locator('#posX').press('Tab');
+  await page.locator('#alignCenterBoth').click();
+  await expect(page.locator('#posX')).toHaveValue('600');
+  await expect(page.locator('#posY')).toHaveValue('400');
+  const { bytes } = await downloadBytes(page);
+  expect(bytes.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+});

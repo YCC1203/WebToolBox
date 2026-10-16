@@ -120,21 +120,30 @@
       const text = document.createElement("span");
       text.textContent = layerName(layer);
       const hint = document.createElement("small");
-      hint.textContent = `${i === layers.length - 1 ? "最上層" : `第 ${i + 1} 層`} · ${layer.visible ? "顯示" : "隱藏"}`;
+      hint.textContent = `${i === layers.length - 1 ? "最上層" : `第 ${i + 1} 層`} · ${layer.visible ? "顯示" : "隱藏"}${layer.locked ? " · 已鎖定" : ""}`;
       select.replaceChildren(text, hint);
       const actions = document.createElement("span");
       actions.className = "composer-layer-buttons";
+      const lock = button(layer.locked ? "🔒" : "🔓", `${layer.locked ? "解鎖" : "鎖定"}${layerName(layer)}`, () => {
+        layer.locked = !layer.locked;
+        save();
+        status(layer.locked ? "圖層已鎖定：無法移動或修改，可從清單解鎖。" : "圖層已解鎖。");
+      });
+      lock.classList.toggle("is-locked", !!layer.locked);
       actions.append(
-        button("↑", `上移${layerName(layer)}`, () => moveLayer(layer.id, 1), i === layers.length - 1),
-        button("↓", `下移${layerName(layer)}`, () => moveLayer(layer.id, -1), i === 0),
+        lock,
+        button("↑", `上移${layerName(layer)}`, () => moveLayer(layer.id, 1), layer.locked || i === layers.length - 1 || layers[i + 1].locked),
+        button("↓", `下移${layerName(layer)}`, () => moveLayer(layer.id, -1), layer.locked || i === 0 || layers[i - 1].locked),
         button(layer.visible ? "◉" : "○", `${layer.visible ? "隱藏" : "顯示"}${layerName(layer)}`, () => {
+          if (layer.locked) return;
           layer.visible = !layer.visible; save();
-        }),
+        }, layer.locked),
         button("×", `移除${layerName(layer)}`, () => {
+          if (layer.locked) return;
           layers = layers.filter(entry => entry.id !== layer.id);
           if (selectedId === layer.id) selectedId = null;
           save();
-        })
+        }, layer.locked)
       );
       li.append(select, actions);
       list.append(li);
@@ -147,15 +156,16 @@
   function moveLayer(id, direction) {
     const index = layers.findIndex(layer => layer.id === id);
     const target = index + direction;
-    if (index < 0 || target < 0 || target >= layers.length) return;
+    if (index < 0 || target < 0 || target >= layers.length || layers[index].locked || layers[target].locked) return;
     [layers[index], layers[target]] = [layers[target], layers[index]];
     save();
   }
   function updateInspector() {
     const layer = selected();
     $("inspector").hidden = !layer;
-    $("inspector").disabled = !layer || pending || exporting;
+    $("inspector").disabled = !layer || pending || exporting || !!layer.locked;
     $("selectionEmpty").hidden = !!layer;
+    $("composerLockHint").hidden = !layer?.locked;
     if (!layer) return;
     $("textOptions").hidden = layer.type !== "text";
     $("textValue").value = layer.text || "";
@@ -228,12 +238,14 @@
     target.setLineDash([6 / previewRatio, 4 / previewRatio]);
     target.strokeRect(-w / 2, -h / 2, w, h);
     target.setLineDash([]);
-    target.beginPath();
-    target.arc(w / 2, h / 2, 7 / previewRatio, 0, Math.PI * 2);
-    target.fillStyle = "#ffffff";
-    target.fill();
-    target.strokeStyle = "#6950e9";
-    target.stroke();
+    if (!layer.locked) {
+      target.beginPath();
+      target.arc(w / 2, h / 2, 7 / previewRatio, 0, Math.PI * 2);
+      target.fillStyle = "#ffffff";
+      target.fill();
+      target.strokeStyle = "#6950e9";
+      target.stroke();
+    }
     target.restore();
   }
   function drawPreview() {
@@ -286,7 +298,7 @@
           const baseWidth = asset.width * factor;
           const baseHeight = asset.height * factor;
           layers.push({ id, type: "image", assetId: id, x: width / 2 + added * 28, y: height / 2 + added * 28,
-            baseWidth, baseHeight, scale: 1, rotation: 0, opacity: 1, visible: true });
+            baseWidth, baseHeight, scale: 1, rotation: 0, opacity: 1, visible: true, locked: false });
           selectedId = id;
           added++;
           save();
@@ -314,7 +326,7 @@
     if (pending || exporting || layers.length >= MAX_FILES) return;
     const id = nextId++;
     layers.push({ id, type: "text", text: "合成文字", fontSize: 64, color: "#1f2937",
-      x: width / 2, y: height / 2, scale: 1, rotation: 0, opacity: 1, visible: true });
+      x: width / 2, y: height / 2, scale: 1, rotation: 0, opacity: 1, visible: true, locked: false });
     selectedId = id;
     save();
     status("文字圖層已建立，可在右側修改內容與顏色。");
@@ -340,7 +352,7 @@
     const el = $(id);
     el.addEventListener("input", () => {
       const layer = selected();
-      if (!layer || pending || exporting) return;
+      if (!layer || layer.locked || pending || exporting) return;
       if (id === "textValue" && layer.type !== "text") return;
       const raw = el.value.trim();
       const value = parse(raw);
@@ -353,6 +365,19 @@
     });
     el.addEventListener("change", () => { save(); });
   }
+  // 快速對齊使用畫布原始座標，與預覽縮放比例無關；可復原及重做。
+  function centerLayer(axis) {
+    const layer = selected();
+    if (!layer || layer.locked || pending || exporting) return;
+    if (axis !== "y") layer.x = width / 2;
+    if (axis !== "x") layer.y = height / 2;
+    save();
+    status("圖層已對齊畫布中央。");
+  }
+  $("alignCenterX").addEventListener("click", () => centerLayer("x"));
+  $("alignCenterY").addEventListener("click", () => centerLayer("y"));
+  $("alignCenterBoth").addEventListener("click", () => centerLayer("both"));
+
   function updateCanvasSetting() {
     if (pending || exporting) return;
     const nextWidth = Number($("canvasWidth").value);
@@ -395,7 +420,7 @@
     for (let i = layers.length - 1; i >= 0; i--) {
       const layer = layers[i];
       // 完全透明的圖層仍可從清單編輯，但不攔截底下圖層的畫布點選。
-      if (!layer.visible || layer.opacity <= 0) continue;
+      if (!layer.visible || layer.opacity <= 0 || layer.locked) continue;
       const [w, h] = drawingSize(layer);
       const [lx, ly] = relativeCoords(layer, x, y);
       if (Math.abs(lx) <= w / 2 && Math.abs(ly) <= h / 2) return layer;
@@ -406,7 +431,7 @@
     if (pending || exporting || event.button !== 0) return;
     const [x, y] = logicalCoords(event);
     const current = selected();
-    const resizing = current?.visible && current.opacity > 0 && isHandle(current, x, y);
+    const resizing = current?.visible && current.opacity > 0 && !current.locked && isHandle(current, x, y);
     const layer = resizing ? current : hitTest(x, y);
     choose(layer?.id ?? null);
     if (!layer) return;
@@ -418,7 +443,7 @@
   canvas.addEventListener("pointermove", event => {
     if (!pointer) return;
     const layer = layers.find(item => item.id === pointer.id);
-    if (!layer) return;
+    if (!layer || layer.locked) return;
     const [x, y] = logicalCoords(event);
     if (pointer.mode === "move") {
       layer.x = pointer.x + x - pointer.startX;

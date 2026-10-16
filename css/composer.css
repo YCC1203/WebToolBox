@@ -52,3 +52,10 @@
 @media(max-width:920px){.composer-workspace{grid-template-columns:1fr}.composer-canvas-settings{grid-template-columns:repeat(2,minmax(0,1fr))}.composer-drop{min-height:200px}}
 @media(max-width:540px){.composer-page{padding:24px 13px 80px}.composer-panel{padding:15px;border-radius:14px}.composer-heading{margin:19px 0}.composer-fields{gap:10px}.composer-panel button,.composer-primary-label{min-height:44px}.composer-layer-buttons button{min-width:40px;min-height:44px}.composer-history{gap:5px}.composer-history button{padding:7px 10px}.composer-canvas-settings{grid-template-columns:repeat(2,minmax(0,1fr))}.composer-export-controls>label,.composer-download{width:100%}.composer-layer-list{max-height:340px}}
 @media(prefers-reduced-motion:reduce){.composer-panel button{transition:none}}
+
+/* 圖層鎖定與快速對齊（v3） */
+.composer-layer-buttons .is-locked{border-color:#b5a3ff;background:#3e345f}
+.composer-align-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.composer-align-actions button{min-width:0;padding:9px 5px}
+#composerLockHint{margin:0 0 12px;color:#ead9aa}
+@media(max-width:540px){.composer-align-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.composer-layer-buttons button{min-width:40px;min-height:44px}}

@@ -57,7 +57,7 @@
           <canvas id="editorCanvas" width="900" height="600" role="img" aria-label="圖片合成即時預覽。點選圖層後可拖曳移動位置"></canvas>
         </div>
         <p id="composerStatus" role="status" aria-live="polite" class="composer-status">先加入圖片或文字，再點選圖層編輯。</p>
-        <p class="composer-hint">點選畫布中的圖層拖曳位置；拖動選取框右下角可縮放。也可使用右側滑桿精確調整。</p>
+        <p class="composer-hint">點選圖層拖曳移動；拖動右下角縮放。鎖定圖層後不會誤選或移動，可從圖層清單解鎖。</p>
       </section>
       <aside class="composer-sidebar" aria-label="圖層編輯器">
         <section class="composer-panel" aria-labelledby="layersTitle">
@@ -68,11 +68,17 @@
         <section class="composer-panel" aria-labelledby="editTitle">
           <h2 id="editTitle">04　編輯選取圖層</h2>
           <p id="selectionEmpty" class="composer-hint">請在畫布或上方清單中選擇圖層。</p>
+          <p id="composerLockHint" class="composer-hint" hidden>此圖層已鎖定，請使用圖層清單的鎖頭按鈕解鎖後再編輯。</p>
           <fieldset id="inspector" class="composer-inspector" disabled hidden>
             <legend class="composer-visually-hidden">目前圖層設定</legend>
             <div id="textOptions" hidden>
               <label>文字內容<input id="textValue" type="text" maxlength="100" placeholder="輸入合成文字"></label>
               <div class="composer-fields"><label>字體大小（px）<input id="fontSize" type="number" min="12" max="300" value="64"></label><label>字體顏色<input id="fontColor" type="color" value="#1f2937"></label></div>
+            </div>
+            <div class="composer-align-actions" role="group" aria-label="快速對齊畫布">
+              <button id="alignCenterX" type="button">水平置中</button>
+              <button id="alignCenterY" type="button">垂直置中</button>
+              <button id="alignCenterBoth" type="button">全部置中</button>
             </div>
             <div class="composer-fields"><label>水平位置 X<input id="posX" type="number" step="1"></label><label>垂直位置 Y<input id="posY" type="number" step="1"></label></div>
             <label>大小 <output id="scaleValue">100%</output><input id="layerScale" type="range" min="5" max="400" value="100"></label>
