@@ -27,7 +27,6 @@
 
   const container = document.createElement("div");
   container.id = "wt-toast-container";
-  container.setAttribute("aria-label", "操作通知");
 
   document.body.appendChild(container);
 
