@@ -1,0 +1,54 @@
+.composer-page{max-width:1280px;margin:auto;padding:36px 20px 95px;min-width:0}
+.composer-back{color:#aeb9d4;font-size:13px}
+.composer-heading{margin:27px 0 24px}
+.composer-heading h1{font-size:clamp(29px,4.2vw,43px);margin:9px 0}
+.composer-heading p{font-size:14px;color:#adbad2;line-height:1.85;margin:0}
+.composer-panel{border:1px solid #313d5b;background:linear-gradient(145deg,#171f35,#101728);padding:22px;border-radius:18px;min-width:0;margin-bottom:16px}
+.composer-panel h2{font-size:17px;margin:0 0 15px;color:#edf0ff}
+.composer-section-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.composer-section-head h2{margin:0}
+.composer-note,.composer-hint,.composer-status,.composer-panel small{color:#a9b8d0;font-size:12px;line-height:1.7}
+.composer-hint{margin:11px 0 0}
+.composer-status{margin:12px 0 0;color:#c0d9fa;overflow-wrap:anywhere}
+.composer-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.composer-canvas-settings{grid-template-columns:1fr 1fr 125px auto;align-items:end}
+.composer-panel label,.composer-inspector>label{display:flex;flex-direction:column;gap:7px;color:#c4cee4;font-size:13px;min-width:0}
+.composer-panel input[type=number],.composer-panel input[type=text],.composer-panel select{width:100%;min-width:0;min-height:41px;background:#0c1323;border:1px solid #384563;border-radius:9px;color:#f4f6ff;padding:8px 10px;font:inherit}
+.composer-panel input[type=color]{height:41px;width:100%;min-width:0;border:1px solid #384563;border-radius:9px;background:#0c1323;padding:4px}
+.composer-panel input[type=range]{width:100%;accent-color:#9b8aff;cursor:pointer;min-height:30px}
+.composer-panel button,.composer-primary-label{border:1px solid #4a5680;border-radius:10px;padding:9px 13px;min-height:42px;background:#222c4a;color:#f5f4ff;cursor:pointer;font:inherit;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.composer-panel button:hover:not(:disabled),.composer-primary-label:hover{border-color:#9c8aff;background:#33365d}
+.composer-panel button:disabled{opacity:.42;cursor:not-allowed}
+.composer-panel button:focus-visible,.composer-primary-label:focus-within,.composer-panel input:focus-visible,.composer-panel select:focus-visible{outline:2px solid #a69bff;outline-offset:2px}
+.composer-panel .composer-check{display:flex;flex-direction:row;align-items:center;gap:8px;min-height:41px}
+.composer-check input{width:19px;height:19px;accent-color:#9b8aff}
+.composer-workspace{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(285px,1fr);gap:16px;align-items:start}
+.composer-workspace .composer-panel{margin-bottom:16px}
+.composer-sidebar{min-width:0}
+.composer-add-row,.composer-history,.composer-export-controls{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.composer-add-row{margin-bottom:14px}
+.composer-add-row input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.composer-primary-label,.composer-panel .composer-download{background:linear-gradient(100deg,#7061ed,#965fee);color:white;border-color:#8679e9;font-weight:700}
+.composer-panel .composer-muted{background:transparent;color:#b6bfd4}
+.composer-drop{border:1px dashed #536286;border-radius:13px;background:repeating-conic-gradient(#273148 0% 25%,#1e283d 0% 50%) 50% / 24px 24px;min-height:260px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:10px}
+.composer-drop.dragover{border-color:#b3a5ff;box-shadow:inset 0 0 0 3px #8b75ff55}
+#editorCanvas{display:block;max-width:100%;max-height:590px;width:auto;height:auto;touch-action:none;cursor:grab;background:transparent;box-shadow:0 8px 30px #0004}
+#editorCanvas:active{cursor:grabbing}
+.composer-layer-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;max-height:400px;overflow:auto}
+.composer-layer-item{background:#0c1426;border:1px solid #35425f;border-radius:10px;padding:9px;display:flex;align-items:center;gap:8px;min-width:0}
+.composer-layer-item.is-selected{border-color:#aa96ff;background:#252442}
+.composer-layer-select{flex:1!important;display:flex!important;flex-direction:column;align-items:flex-start!important;text-align:left;min-width:0;overflow:hidden}
+.composer-layer-select span,.composer-layer-select small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.composer-layer-buttons{display:flex;flex-wrap:wrap;gap:3px}
+.composer-layer-buttons button{padding:0;width:34px;height:38px;min-height:38px;flex:0 0 auto}
+.composer-inspector{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;min-width:0}
+.composer-inspector[hidden],#textOptions[hidden],#qualityField[hidden]{display:none}
+#textOptions{display:flex;flex-direction:column;gap:12px}
+.composer-inspector output{color:#d9cbff}
+.composer-export-controls{gap:14px}
+.composer-export-controls>label{min-width:185px}
+.composer-download{min-width:195px}
+.composer-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:920px){.composer-workspace{grid-template-columns:1fr}.composer-canvas-settings{grid-template-columns:repeat(2,minmax(0,1fr))}.composer-drop{min-height:200px}}
+@media(max-width:540px){.composer-page{padding:24px 13px 80px}.composer-panel{padding:15px;border-radius:14px}.composer-heading{margin:19px 0}.composer-fields{gap:10px}.composer-panel button,.composer-primary-label{min-height:44px}.composer-layer-buttons button{min-width:40px;min-height:44px}.composer-history{gap:5px}.composer-history button{padding:7px 10px}.composer-canvas-settings{grid-template-columns:repeat(2,minmax(0,1fr))}.composer-export-controls>label,.composer-download{width:100%}.composer-layer-list{max-height:340px}}
+@media(prefers-reduced-motion:reduce){.composer-panel button{transition:none}}

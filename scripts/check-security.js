@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const cp = require('node:child_process');
 const root = path.resolve(__dirname, '..');
-const pages = ['index.html', ...['qr','password','text','json','resize','convert','compress','crop','watermark','stitch','pdf'].map(x => `tools/${x}.html`)];
+const pages = ['index.html', ...['qr','password','text','json','resize','convert','compress','crop','watermark','stitch','composer','pdf'].map(x => `tools/${x}.html`)];
 const errors = [];
 const warnings = [];
 const fail = (file, reason) => errors.push(`${file}: ${reason}`);

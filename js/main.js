@@ -81,6 +81,11 @@ const toolIcons = {
     <path d="M3 11h18M11 3v18"/>
     <path d="M6 6h2v2H6zM14 14h4v4h-4z"/>
   `,
+  composer: `
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <path d="M7 7h9v9H7z"/><path d="M11 11h9v9h-9z"/>
+    <circle cx="11" cy="11" r="1"/>
+  `,
   pdf: `
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
     <path d="M14 2v6h6"/>
@@ -213,6 +218,16 @@ const tools = [
     color: "blue",
     ready: true,
     url: "./tools/stitch.html"
+  },
+  {
+    id: "composer",
+    name: "圖片合成",
+    description: "多張圖片自由疊圖、移動縮放旋轉、文字編輯與 PNG／JPG／WebP 下載。",
+    category: "image",
+    icon: "▣",
+    color: "purple",
+    ready: true,
+    url: "./tools/composer.html"
   },
   {
     id: "pdf",

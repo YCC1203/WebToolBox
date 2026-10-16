@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d1a">
+  <title>圖片合成工具｜自由疊圖、圖層調整與文字編輯｜WebToolbox</title>
+  <meta name="description" content="免費線上圖片合成工具，可自由疊加多張 JPG、PNG、WebP，拖曳移動、縮放、旋轉、調整透明度與圖層順序，加入文字並復原重做，輸出 PNG、JPG 或 WebP。圖片只在瀏覽器處理。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ycc1203.github.io/WebToolBox/tools/composer.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="圖片合成工具｜多圖自由疊加與下載｜WebToolbox">
+  <meta property="og:description" content="圖片自由疊加、拖曳移動、縮放旋轉、圖層排序與文字合成；瀏覽器本機處理。">
+  <meta property="og:url" content="https://ycc1203.github.io/WebToolBox/tools/composer.html">
+  <meta property="og:site_name" content="WebToolbox">
+  <meta property="og:locale" content="zh_TW">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="圖片合成工具｜多圖自由疊加與下載｜WebToolbox">
+  <meta name="twitter:description" content="多張圖片圖層合成，可移動、縮放、旋轉、調透明度與下載 PNG／JPG／WebP。">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <link rel="stylesheet" href="../css/composer.css">
+  <script src="../js/notify.js" defer></script>
+  <script src="../js/composer.js" defer></script>
+  <script src="../js/site.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a href="../index.html" class="logo"><span class="logo-icon">✦</span><span>Web<span class="accent">Toolbox</span></span></a>
+    <nav class="nav-links" aria-label="主選單"><a href="../index.html">首頁</a><a href="../index.html#tools">所有工具</a></nav>
+    <a href="../index.html#tools" class="nav-button">返回工具箱 ↗</a>
+  </header>
+  <main class="composer-page">
+    <a class="composer-back" href="../index.html#tools">← 返回所有工具</a>
+    <div class="composer-heading"><span class="eyebrow">IMAGE / COMPOSER</span><h1>圖片<span class="gradient-text">合成工具</span></h1><p>將多張圖片疊在同一張畫布上，自由移動、縮放、旋轉、加文字；所有內容都在瀏覽器本機處理。</p></div>
+    <section class="composer-panel" aria-labelledby="canvasTitle">
+      <div class="composer-section-head"><h2 id="canvasTitle">01　畫布設定</h2><span class="composer-note">匯出時使用設定的原始尺寸</span></div>
+      <div class="composer-fields composer-canvas-settings">
+        <label>畫布寬度（px）<input id="canvasWidth" type="number" min="200" max="5000" step="1" value="1200"></label>
+        <label>畫布高度（px）<input id="canvasHeight" type="number" min="200" max="5000" step="1" value="800"></label>
+        <label>背景顏色<input id="backgroundColor" type="color" value="#ffffff"></label>
+        <label class="composer-check"><input id="transparentBg" type="checkbox">透明背景（PNG／WebP）</label>
+      </div>
+    </section>
+    <div class="composer-workspace">
+      <section class="composer-panel composer-editor" aria-labelledby="editorTitle">
+        <div class="composer-section-head"><h2 id="editorTitle">02　編輯畫布</h2><div class="composer-history"><button id="undoBtn" type="button" disabled title="復原 Ctrl+Z">↶ 復原</button><button id="redoBtn" type="button" disabled title="重做 Ctrl+Y">↷ 重做</button></div></div>
+        <div class="composer-add-row">
+          <label for="imageFiles" class="composer-primary-label">＋ 加入圖片</label>
+          <input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+          <button id="addTextBtn" type="button">＋ 新增文字</button>
+          <button id="clearBtn" type="button" class="composer-muted">清空畫布</button>
+        </div>
+        <div id="composerDrop" class="composer-drop" aria-label="圖片合成畫布，亦可拖放圖片檔案">
+          <canvas id="editorCanvas" width="900" height="600" role="img" aria-label="圖片合成即時預覽。點選圖層後可拖曳移動位置"></canvas>
+        </div>
+        <p id="composerStatus" role="status" aria-live="polite" class="composer-status">先加入圖片或文字，再點選圖層編輯。</p>
+        <p class="composer-hint">點選畫布中的圖層拖曳位置；拖動選取框右下角可縮放。也可使用右側滑桿精確調整。</p>
+      </section>
+      <aside class="composer-sidebar" aria-label="圖層編輯器">
+        <section class="composer-panel" aria-labelledby="layersTitle">
+          <div class="composer-section-head"><h2 id="layersTitle">03　圖層管理</h2><small id="layerCount">0 個圖層</small></div>
+          <ul id="layerList" class="composer-layer-list" aria-label="圖層清單"></ul>
+          <p id="layerEmpty" class="composer-hint">尚無圖層，加入圖片或文字開始合成。</p>
+        </section>
+        <section class="composer-panel" aria-labelledby="editTitle">
+          <h2 id="editTitle">04　編輯選取圖層</h2>
+          <p id="selectionEmpty" class="composer-hint">請在畫布或上方清單中選擇圖層。</p>
+          <fieldset id="inspector" class="composer-inspector" disabled hidden>
+            <legend class="composer-visually-hidden">目前圖層設定</legend>
+            <div id="textOptions" hidden>
+              <label>文字內容<input id="textValue" type="text" maxlength="100" placeholder="輸入合成文字"></label>
+              <div class="composer-fields"><label>字體大小（px）<input id="fontSize" type="number" min="12" max="300" value="64"></label><label>字體顏色<input id="fontColor" type="color" value="#1f2937"></label></div>
+            </div>
+            <div class="composer-fields"><label>水平位置 X<input id="posX" type="number" step="1"></label><label>垂直位置 Y<input id="posY" type="number" step="1"></label></div>
+            <label>大小 <output id="scaleValue">100%</output><input id="layerScale" type="range" min="5" max="400" value="100"></label>
+            <label>旋轉 <output id="rotationValue">0°</output><input id="rotation" type="range" min="-180" max="180" value="0"></label>
+            <label>不透明度 <output id="opacityValue">100%</output><input id="layerOpacity" type="range" min="0" max="100" value="100"></label>
+          </fieldset>
+        </section>
+      </aside>
+    </div>
+    <section class="composer-panel" aria-labelledby="exportTitle">
+      <div class="composer-section-head"><h2 id="exportTitle">05　匯出圖片</h2><span class="composer-note">選取框不會出現在下載檔案</span></div>
+      <div class="composer-export-controls">
+        <label>輸出格式<select id="outputFormat"><option value="image/png">PNG（支援透明）</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select></label>
+        <label id="qualityField" hidden>圖片品質 <output id="qualityValue">92%</output><input id="quality" type="range" min="40" max="100" value="92"></label>
+        <button id="downloadBtn" type="button" class="composer-download" disabled>↓ 下載合成圖片</button>
+      </div>
+      <p class="composer-hint">JPG 不支援透明背景，選擇 JPG 時透明區域會以白色填滿。最大輸出 2,000 萬像素、單邊不超過 5,000px。</p>
+    </section>
+  </main>
+  <footer class="footer"><a href="../index.html" class="footer-brand">✦ WebToolbox</a><p>Made for simplicity and productivity.</p><span>© <span id="year"></span> WebToolbox</span></footer>
+</body>
+</html>
